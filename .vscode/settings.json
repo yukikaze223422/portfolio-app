@@ -1,0 +1,21 @@
+{
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true, // ファイル保存時にESLintでフォーマット
+        "source.organizeImports": true // 未使用の import文 を削除 & 自動ソート
+    },
+    "eslint.format.enable": false,
+    "editor.formatOnSave": true,
+    "[javascript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "javascript.suggest.paths": true, // importやrequireコールの中のパスの提案
+    "[json]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[typescript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "typescript.suggest.paths": true, // importやrequireコールの中のパスの提案
+    "typescript.enablePromptUseWorkspaceTsdk": true
+}
