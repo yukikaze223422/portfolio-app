@@ -1,22 +1,35 @@
 module.exports = {
-  root: true, // プロジェクトのルートに配置していると教えている
-  env: {
-    es2020: true,
-    node: true,
-  },
-  parser: "@typescript-eslint/parser", // ESLintにTypeScriptを適応
-  parserOptions: {
-    sourceType: "module",
-    ecmaVersion: 2020,
-    tsconfigRootDir: __dirname,
-    project: ["./tsconfig.eslint.json"],
-  },
-  plugins: ["@typescript-eslint"], // TypeScriptプラグインのルールを適用
-  extends: [
-    "eslint:recommended", //ESLintのJavaScriptルールを適用
-    "plugin:@typescript-eslint/recommended", // 型チェックが不要なルールを適用
-    "prettier",
-    "prettier/@typescript-eslint", // Prettierでカバーできるルールを無効化
-  ],
-  rules: {},
+    ignorePatterns: ["!.eslintrc.js", "!.prettierrc.js"],
+    extends: [
+        "eslint:recommended",
+        "plugin:react/recommended",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:@typescript-eslint/eslint-recommended",
+        "plugin:prettier/recommended",
+        // 'prettier/@typescript-eslint',
+    ],
+    plugins: ["@typescript-eslint", "react"],
+    parser: "@typescript-eslint/parser",
+    env: {
+        browser: true,
+        node: true,
+        es6: true,
+        jest: true,
+    },
+    parserOptions: {
+        sourceType: "module",
+        ecmaFeatures: {
+            jsx: true,
+        },
+    },
+    settings: {
+        react: {
+            version: "detect",
+        },
+    },
+    rules: {
+        "react/prop-types": "off",
+        "react/react-in-jsx-scope": "off",
+        "@typescript-eslint/no-explicit-any": "off",
+    },
 };
