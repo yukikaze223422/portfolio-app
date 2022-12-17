@@ -4,7 +4,6 @@ import type { NextPage } from "next";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
-import { useForm } from "react-hook-form";
 import { FcGoogle } from "react-icons/fc";
 import { auth } from "../../firebase";
 import PrimaryButton from "../components/elements/Button/PrimaryButton";
@@ -13,11 +12,6 @@ import { useMessage } from "../hooks/useMessage";
 //ログインページ
 const Login: NextPage = () => {
   const { showMessage } = useMessage();
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
 
   const [loading, setIsLoading] = useState<boolean>(false);
   const [email, setEmail] = useState<string>("");
