@@ -1,3 +1,5 @@
-export default function Home() {
-    return <h1>テスト</h1>;
-}
+const Page = () => {
+  return <h1>Index</h1>;
+};
+
+export default Page;
