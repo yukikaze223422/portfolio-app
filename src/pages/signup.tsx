@@ -1,5 +1,7 @@
+import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import {
   Box,
+  Button,
   Divider,
   Flex,
   FormControl,
@@ -8,10 +10,13 @@ import {
   Heading,
   HStack,
   Input,
+  InputGroup,
+  InputRightElement,
   Link,
   Stack,
 } from "@chakra-ui/react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
 import type { NextPage } from "next";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
@@ -20,7 +25,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { AiOutlineMail } from "react-icons/ai";
 import { FiUser } from "react-icons/fi";
 import { RiLockPasswordLine } from "react-icons/ri";
-import { auth } from "../../firebase";
+import { auth, db } from "../../firebase";
 import PrimaryButton from "../components/elements/Button/PrimaryButton";
 import { useMessage } from "../hooks/useMessage";
 
@@ -30,8 +35,8 @@ type Inputs = {
   password: string;
 };
 
-//ログインページ
-const Signup: NextPage = () => {
+//サインアップページ
+const SignUp: NextPage = () => {
   const { showMessage } = useMessage();
   const {
     register,
@@ -40,12 +45,23 @@ const Signup: NextPage = () => {
   } = useForm<Inputs>();
 
   const [loading, setIsLoading] = useState<boolean>(false);
+  const [isRevealPassword, setIsRevealPassword] = useState<boolean>(false);
   const router = useRouter();
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     try {
       setIsLoading(true);
-      await createUserWithEmailAndPassword(auth, data.email, data.password);
+      const newUser = await createUserWithEmailAndPassword(auth, data.email, data.password);
+      console.log(newUser.user);
+      const uid = newUser.user.uid;
+      if (newUser) {
+        await setDoc(doc(db, "users", uid), {
+          uid: uid,
+          username: data.username,
+          email: data.email,
+          photoUrl: newUser.user.photoURL,
+        });
+      }
       router.push("/");
       showMessage({ title: "登録が完了しました。", status: "success" });
       setIsLoading(false);
@@ -55,7 +71,7 @@ const Signup: NextPage = () => {
   };
 
   return (
-    <Flex align="center" justify="center" height="100vh" bg="orange.50">
+    <Flex align="center" justify="center" height="100vh">
       <Box bg="white" w="md" p={4} borderRadius="md" shadow="md">
         <Heading as="h1" size="lg" textAlign="center">
           新規登録
@@ -123,20 +139,34 @@ const Signup: NextPage = () => {
                     パスワード
                   </FormLabel>
                 </HStack>
-                <Input
-                  id="password"
-                  {...register("password", {
-                    required: "パスワードを入力してください。",
-                    minLength: {
-                      value: 6,
-                      message: "６文字以上で入力してください。",
-                    },
-                  })}
-                  placeholder="パスワード"
-                  size="lg"
-                  type="password"
-                  autoComplete="off"
-                />
+                <InputGroup>
+                  <Input
+                    id="password"
+                    {...register("password", {
+                      required: "パスワードを入力してください。",
+                      minLength: {
+                        value: 6,
+                        message: "６文字以上で入力してください。",
+                      },
+                    })}
+                    placeholder="パスワード"
+                    size="lg"
+                    type={isRevealPassword ? "text" : "password"}
+                    autoComplete="off"
+                  />
+                  {/* パスワード可視化ボタン */}
+                  <InputRightElement>
+                    <Button
+                      variant={"ghost"}
+                      onClick={() => setIsRevealPassword((isRevealPassword) => !isRevealPassword)}
+                      size="lg"
+                      mt={2}
+                      mr={2}
+                    >
+                      {isRevealPassword ? <ViewIcon /> : <ViewOffIcon />}
+                    </Button>
+                  </InputRightElement>
+                </InputGroup>
                 <FormErrorMessage>
                   {errors.password?.message && errors.password.message}
                 </FormErrorMessage>
@@ -163,4 +193,4 @@ const Signup: NextPage = () => {
   );
 };
 
-export default Signup;
+export default SignUp;

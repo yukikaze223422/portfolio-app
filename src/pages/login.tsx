@@ -1,4 +1,16 @@
-import { Box, Divider, Flex, Heading, Input, Link, Stack } from "@chakra-ui/react";
+import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
+import {
+  Box,
+  Button,
+  Divider,
+  Flex,
+  Heading,
+  Input,
+  InputGroup,
+  InputRightElement,
+  Link,
+  Stack,
+} from "@chakra-ui/react";
 import { GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import type { NextPage } from "next";
 import NextLink from "next/link";
@@ -14,6 +26,7 @@ const Login: NextPage = () => {
   const { showMessage } = useMessage();
 
   const [loading, setIsLoading] = useState<boolean>(false);
+  const [isRevealPassword, setIsRevealPassword] = useState<boolean>(false);
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const router = useRouter();
@@ -37,9 +50,10 @@ const Login: NextPage = () => {
       setIsLoading(true);
       const provider = new GoogleAuthProvider();
       await signInWithPopup(auth, provider);
+      const user = auth.currentUser;
       router.push("/");
       showMessage({ title: "ログインしました。", status: "success" });
-    } catch (err) {
+    } catch {
       showMessage({ title: "ログインできませんでした。", status: "error" });
     }
     setIsLoading(false);
@@ -61,13 +75,14 @@ const Login: NextPage = () => {
   };
 
   return (
-    <Flex align="center" justify="center" height="100vh" bg="orange.50">
+    <Flex align="center" justify="center" height="100vh">
       <Box bg="white" w="md" p={4} borderRadius="md" shadow="md">
         <Heading as="h1" size="lg" textAlign="center">
           ログインページ
         </Heading>
         <Divider my={4} />
         <Stack spacing={6} py={4} px={10}>
+          {/* メールアドレス入力欄 */}
           <Input
             placeholder="メールアドレス"
             size="lg"
@@ -77,15 +92,33 @@ const Login: NextPage = () => {
               setEmail(e.target.value);
             }}
           />
-          <Input
-            placeholder="パスワード"
-            size="lg"
-            type="password"
-            value={password}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-              setPassword(e.target.value);
-            }}
-          ></Input>
+
+          {/* パスワード入力欄 */}
+          <InputGroup>
+            <Input
+              placeholder="パスワード"
+              size="lg"
+              type={isRevealPassword ? "text" : "password"}
+              value={password}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                setPassword(e.target.value);
+              }}
+            />
+            {/* パスワード可視化ボタン */}
+            <InputRightElement>
+              <Button
+                variant={"ghost"}
+                onClick={() => setIsRevealPassword((isRevealPassword) => !isRevealPassword)}
+                size="lg"
+                mt={2}
+                mr={2}
+              >
+                {isRevealPassword ? <ViewIcon /> : <ViewOffIcon />}
+              </Button>
+            </InputRightElement>
+          </InputGroup>
+
+          {/* ログインボタン */}
           <PrimaryButton
             loading={loading}
             bg="orange.300"
@@ -94,6 +127,8 @@ const Login: NextPage = () => {
           >
             ログイン
           </PrimaryButton>
+
+          {/* Googleログインボタン */}
           <PrimaryButton
             loading={loading}
             bg="green.300"
@@ -103,6 +138,8 @@ const Login: NextPage = () => {
           >
             Googleログイン
           </PrimaryButton>
+
+          {/* ゲストログインボタン */}
           <PrimaryButton loading={loading} bg="blue.300" color="white" onClick={guestLogin}>
             ゲストログイン
           </PrimaryButton>
