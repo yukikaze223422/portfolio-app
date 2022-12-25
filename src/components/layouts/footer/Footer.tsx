@@ -10,6 +10,8 @@ const Footer = () => {
       borderTop="1px"
       borderColor="gray.200"
       p={2}
+      position="absolute"
+      bottom="0"
     >
       &copy; 2022 RamenSharing All rights reserved.
     </Container>
