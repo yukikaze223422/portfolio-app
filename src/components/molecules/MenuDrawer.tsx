@@ -39,10 +39,22 @@ const MenuDrawer = (props: Props) => {
       <DrawerContent onClick={onToggle}>
         <DrawerBody p={4}>
           <VStack>
-            <Button w="80%" bg="white" onClick={onClickHome}>
+            <Button
+              w="80%"
+              bg="white"
+              borderBottom="1px"
+              borderColor="gray.200"
+              onClick={onClickHome}
+            >
               ホーム
             </Button>
-            <Button w="80%" bg="white" onClick={onClickLogout}>
+            <Button
+              w="80%"
+              bg="white"
+              borderBottom="1px"
+              borderColor="gray.200"
+              onClick={onClickLogout}
+            >
               ログアウト
             </Button>
           </VStack>

@@ -9,7 +9,6 @@ const Footer = () => {
       textAlign="center"
       borderTop="1px"
       borderColor="gray.200"
-      p={2}
       position="absolute"
       bottom="0"
     >

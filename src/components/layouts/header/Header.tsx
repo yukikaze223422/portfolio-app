@@ -1,4 +1,4 @@
-import { Box, Container, Flex, Image, Link, Text, useDisclosure } from "@chakra-ui/react";
+import { Container, Flex, Image, Link, Text, useDisclosure } from "@chakra-ui/react";
 import { Timestamp } from "firebase/firestore";
 import NextLink from "next/link";
 import { NextRouter, useRouter } from "next/router";
@@ -45,25 +45,25 @@ const Header = () => {
               <Image src="/logo.png" alt="logo" width="165px" height="55px" />
             </Link>
             <Flex justify="flex-end" fontSize="md" display={{ base: "none", md: "flex" }}>
-              <Box
+              <Link
+                as={NextLink}
+                href="/login"
                 pr={5}
                 fontWeight="bold"
                 color="gray.500"
-                _hover={{ opacity: 0.8, color: "orange.300" }}
+                _hover={{ opacity: 0.8, color: "orange.300", textDecoration: "none" }}
               >
-                <Link as={NextLink} href="/login">
-                  ログイン
-                </Link>
-              </Box>
-              <Box
+                ログイン
+              </Link>
+              <Link
+                as={NextLink}
+                href="/signup"
                 fontWeight="bold"
                 color="gray.500"
-                _hover={{ opacity: 0.8, color: "orange.300" }}
+                _hover={{ opacity: 0.8, color: "orange.300", textDecoration: "none" }}
               >
-                <Link as={NextLink} href="/signup">
-                  サインアップ
-                </Link>
-              </Box>
+                サインアップ
+              </Link>
             </Flex>
             <MenuIconButton onOpen={onOpen} />
           </Flex>
