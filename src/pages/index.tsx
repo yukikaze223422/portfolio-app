@@ -30,7 +30,7 @@ const Home: NextPage = () => {
   return (
     <>
       {/*レビューMax450文字 */}
-      <VStack pb={12}>
+      <VStack py={12}>
         {ramenData.map((data) => (
           <Flex
             key={data.id}

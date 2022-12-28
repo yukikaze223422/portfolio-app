@@ -9,8 +9,6 @@ const Footer = () => {
       textAlign="center"
       borderTop="1px"
       borderColor="gray.200"
-      position="absolute"
-      bottom="0"
     >
       &copy; 2022 RamenSharing All rights reserved.
     </Container>
