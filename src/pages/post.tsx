@@ -4,6 +4,7 @@ import {
   Divider,
   Flex,
   FormControl,
+  FormErrorMessage,
   FormLabel,
   Heading,
   HStack,
@@ -15,12 +16,45 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { NextPage } from "next";
+import { useRouter } from "next/router";
 import { useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
 import PrimaryButton from "../components/elements/Button/PrimaryButton";
+import { useMessage } from "../hooks/useMessage";
+
+type Inputs = {
+  storeName: string;
+  productName: string;
+  base: string;
+  review: string;
+  picture: string;
+  address: string;
+};
 
 const Post: NextPage = () => {
+  const { showMessage } = useMessage();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<Inputs>();
+
   const [loading, setIsLoading] = useState<boolean>(false);
   const [base, setBase] = useState("とんこつ");
+  const router = useRouter();
+
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+    try {
+      console.log(data);
+      console.log(base);
+      setIsLoading(true);
+      router.push("/");
+      showMessage({ title: "投稿が完了しました。", status: "success" });
+      setIsLoading(false);
+    } catch (err) {
+      showMessage({ title: "投稿できませんでした。", status: "error" });
+    }
+  };
 
   return (
     <Flex align="center" justify="center">
@@ -30,22 +64,31 @@ const Post: NextPage = () => {
         </Heading>
         <Divider my={4} />
         <Stack spacing={6} py={4} px={10}>
-          <form>
+          <form onSubmit={handleSubmit(onSubmit)}>
             {/* 店名入力欄 */}
-            <FormControl mb={4}>
+            <FormControl mb={4} isInvalid={errors.storeName ? true : false}>
               <HStack mb={3}>
                 <Badge variant="solid" colorScheme="red">
                   必須
                 </Badge>
                 <FormLabel fontWeight="bold" color="orange.400">
-                  店名
+                  店舗名
                 </FormLabel>
               </HStack>
-              <Input type="text" w="90%" />
+              <Input
+                type="text"
+                w="90%"
+                id="storeName"
+                {...register("storeName", {
+                  required: "店名を入力してください",
+                })}
+                autoComplete="off"
+              />
+              <FormErrorMessage>{errors.storeName?.message}</FormErrorMessage>
             </FormControl>
 
-            {/* 店名入力欄 */}
-            <FormControl mb={4}>
+            {/* 商品名入力欄 */}
+            <FormControl mb={4} isInvalid={errors.productName ? true : false}>
               <HStack mb={3}>
                 <Badge variant="solid" colorScheme="red">
                   必須
@@ -54,7 +97,16 @@ const Post: NextPage = () => {
                   商品名
                 </FormLabel>
               </HStack>
-              <Input type="text" w="90%" />
+              <Input
+                type="text"
+                w="90%"
+                id="productName"
+                {...register("productName", {
+                  required: "商品名を入力してください",
+                })}
+                autoComplete="off"
+              />
+              <FormErrorMessage>{errors.productName?.message}</FormErrorMessage>
             </FormControl>
 
             {/* ベース選択欄 */}
@@ -62,7 +114,7 @@ const Post: NextPage = () => {
               <FormLabel fontWeight="bold" color="orange.400">
                 ベース
               </FormLabel>
-              <RadioGroup onChange={setBase} value={base}>
+              <RadioGroup id="base" onChange={setBase} value={base}>
                 <Stack direction="row">
                   <Radio value="とんこつ">とんこつ</Radio>
                   <Radio value="醤油">醤油</Radio>
@@ -74,7 +126,7 @@ const Post: NextPage = () => {
             </FormControl>
 
             {/* レビュー入力欄 */}
-            <FormControl>
+            <FormControl mb={4} isInvalid={errors.review ? true : false}>
               <HStack mb={3}>
                 <Badge variant="solid" colorScheme="red">
                   必須
@@ -87,9 +139,19 @@ const Post: NextPage = () => {
                 placeholder="ラーメンの感想を書いてください。（450文字以内）"
                 rows={5}
                 w="90%"
-                mb={4}
+                id="review"
+                {...register("review", {
+                  required: "レビューを入力してください",
+                  maxLength: {
+                    value: 450,
+                    message: "450文字以内で入力してください",
+                  },
+                })}
+                autoComplete="off"
               />
+              <FormErrorMessage>{errors.review?.message}</FormErrorMessage>
             </FormControl>
+
             {/* 画像アップロード */}
             <FormControl mb={4}>
               <HStack mb={3}>
@@ -100,11 +162,11 @@ const Post: NextPage = () => {
                   ラーメンの写真
                 </FormLabel>
               </HStack>
-              <input className="upload-label" type="file" />
+              <input id="picture" className="upload-label" type="file" {...register("picture")} />
             </FormControl>
 
             {/* 店舗住所入力欄 */}
-            <FormControl>
+            <FormControl isInvalid={errors.address ? true : false}>
               <HStack mb={3}>
                 <Badge variant="solid" colorScheme="green">
                   任意
@@ -113,15 +175,29 @@ const Post: NextPage = () => {
                   店舗住所
                 </FormLabel>
               </HStack>
-              <Input type="text" w="90%" mb={4} />
+              <Input
+                id="address"
+                type="text"
+                w="90%"
+                mb={4}
+                {...register("address", {
+                  maxLength: {
+                    value: 100,
+                    message: "100文字以内で入力してください",
+                  },
+                })}
+                autoComplete="off"
+              />
+              <FormErrorMessage>{errors.address?.message}</FormErrorMessage>
             </FormControl>
+
+            {/* 登録ボタン */}
+            <VStack>
+              <PrimaryButton loading={loading} bg="orange.300" color="white" type="submit" w="40%">
+                投稿する
+              </PrimaryButton>
+            </VStack>
           </form>
-          {/* 登録ボタン */}
-          <VStack>
-            <PrimaryButton loading={loading} bg="orange.300" color="white" type="submit" w="40%">
-              投稿する
-            </PrimaryButton>
-          </VStack>
         </Stack>
       </Box>
     </Flex>
