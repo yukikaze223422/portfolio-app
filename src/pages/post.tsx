@@ -15,16 +15,20 @@ import {
   Textarea,
   VStack,
 } from "@chakra-ui/react";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { ref, uploadBytes } from "firebase/storage";
+import { validateImage } from "image-validator";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { db, storage } from "../../firebase";
 import PrimaryButton from "../components/elements/Button/PrimaryButton";
 import { useMessage } from "../hooks/useMessage";
 
 type Inputs = {
   storeName: string;
-  productName: string;
+  ramenName: string;
   base: string;
   review: string;
   picture: string;
@@ -41,19 +45,74 @@ const Post: NextPage = () => {
 
   const [loading, setIsLoading] = useState<boolean>(false);
   const [base, setBase] = useState("とんこつ");
+  const [file, setFile] = useState<File>(null!);
   const router = useRouter();
 
+  // ファイルのバリデーション関数
+  const validateFile = async (file: File) => {
+    // 3GBを最大のファイルサイズに設定
+    const limitFileSize = 3 * 1024 * 1024;
+    if (file.size > limitFileSize) {
+      showMessage({
+        title: "ファイルサイズが大きすぎます。\n3メガバイト以下にしてください。",
+        status: "error",
+      });
+      return false;
+    }
+    const isValidImage = await validateImage(file);
+    if (!isValidImage) {
+      showMessage({ title: "画像ファイル以外はアップロードできません。", status: "error" });
+      return false;
+    }
+    return true;
+  };
+
+  // 画像選択関数
+  const handleImageSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    const reader = new FileReader();
+    const file = e.target.files![0];
+    if (!(await validateFile(file))) {
+      return;
+    }
+    reader.onloadend = async () => {
+      setFile(file);
+    };
+    reader.readAsDataURL(file);
+  };
+
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
+    console.log(data.picture);
     try {
-      console.log(data);
-      console.log(base);
       setIsLoading(true);
+
+      // 画像アップロード
+      const storageRef = ref(storage, `images/${file.name}_${file.lastModified}`);
+      await uploadBytes(storageRef, file)
+        .then((snapshot) => {
+          console.log(`アップロードに成功しました: ${snapshot}`);
+        })
+        .catch((error) => {
+          console.log(`アップロードに失敗しました: ${error}`);
+        });
+
+      const docRef = await addDoc(collection(db, "ramenData"), {
+        uid: "aaaaa",
+        storeName: data.storeName,
+        ramenName: data.ramenName,
+        base: base,
+        detail: data.review,
+        address: data.address,
+        picture: `images/${file.name}_${file.lastModified}`,
+        createTime: serverTimestamp(),
+        contributor: "テストユーザーあああ",
+      });
       router.push("/");
       showMessage({ title: "投稿が完了しました。", status: "success" });
-      setIsLoading(false);
     } catch (err) {
       showMessage({ title: "投稿できませんでした。", status: "error" });
     }
+    setIsLoading(false);
   };
 
   return (
@@ -88,7 +147,7 @@ const Post: NextPage = () => {
             </FormControl>
 
             {/* 商品名入力欄 */}
-            <FormControl mb={4} isInvalid={errors.productName ? true : false}>
+            <FormControl mb={4} isInvalid={errors.ramenName ? true : false}>
               <HStack mb={3}>
                 <Badge variant="solid" colorScheme="red">
                   必須
@@ -100,13 +159,13 @@ const Post: NextPage = () => {
               <Input
                 type="text"
                 w="90%"
-                id="productName"
-                {...register("productName", {
+                id="ramenName"
+                {...register("ramenName", {
                   required: "商品名を入力してください",
                 })}
                 autoComplete="off"
               />
-              <FormErrorMessage>{errors.productName?.message}</FormErrorMessage>
+              <FormErrorMessage>{errors.ramenName?.message}</FormErrorMessage>
             </FormControl>
 
             {/* ベース選択欄 */}
@@ -162,7 +221,13 @@ const Post: NextPage = () => {
                   ラーメンの写真
                 </FormLabel>
               </HStack>
-              <input id="picture" className="upload-label" type="file" {...register("picture")} />
+              <input
+                id="picture"
+                className="upload-label"
+                type="file"
+                {...register("picture")}
+                onChange={handleImageSelect}
+              />
             </FormControl>
 
             {/* 店舗住所入力欄 */}

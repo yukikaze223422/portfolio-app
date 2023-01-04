@@ -1,5 +1,5 @@
 import { Badge, Flex, Heading, Image, Stack, Text, VStack } from "@chakra-ui/react";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, orderBy, query } from "firebase/firestore";
 
 import { NextPage } from "next";
 import { useEffect, useState } from "react";
@@ -22,14 +22,14 @@ const Home: NextPage = () => {
 
   useEffect(() => {
     const ramenDataRef = collection(db, "ramenData");
-    getDocs(ramenDataRef).then((querySnapshot) => {
+    const sortRamenDataRef = query(ramenDataRef, orderBy("createTime", "desc"));
+    getDocs(sortRamenDataRef).then((querySnapshot) => {
       setRamenData(querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
     });
   }, []);
 
   return (
     <>
-      {/*レビューMax450文字 */}
       <VStack py={12}>
         {ramenData.map((data) => (
           <Flex
@@ -46,12 +46,11 @@ const Home: NextPage = () => {
           >
             <Image
               src="https://bit.ly/dan-abramov"
-              alt="Dan Abramov"
-              m="0 auto"
+              alt={data.ramenName}
               w={{ base: "400px", md: "300px" }}
               h={{ base: "400px", md: "300px" }}
             />
-            <Stack>
+            <Stack width="100%">
               <Heading as="h1" textAlign={{ base: "center", md: "left" }}>
                 {data.storeName}
                 <Badge variant="solid" colorScheme="green" ml={2}>
@@ -81,13 +80,15 @@ const Home: NextPage = () => {
               <Flex pb={2} position="absolute" bottom={{ base: "0", md: "15px" }}>
                 <Image
                   src="https://bit.ly/dan-abramov"
-                  alt={data.ramenName}
+                  alt={data.contributor}
                   borderRadius="999px"
                   w="25px"
                   h="25px"
                 />
-                <Text>&nbsp;{data.contributor}　</Text>
-                <Text>投稿日時：{getDisplayTime(data.createTime)}</Text>
+                <Flex direction={{ base: "column", md: "row" }}>
+                  <Text>&nbsp;{data.contributor}　</Text>
+                  <Text>投稿日時：{getDisplayTime(data.createTime)}</Text>
+                </Flex>
               </Flex>
             </Stack>
           </Flex>
