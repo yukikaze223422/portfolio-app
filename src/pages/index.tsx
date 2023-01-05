@@ -30,7 +30,7 @@ const Home: NextPage = () => {
 
   return (
     <>
-      <VStack py={12}>
+      <VStack py={12} gap={4}>
         {ramenData.map((data) => (
           <Flex
             key={data.id}
@@ -67,14 +67,7 @@ const Home: NextPage = () => {
               >
                 {data.ramenName}
               </Heading>
-              <Text
-                h={{ base: "120px", md: "165px" }}
-                sx={{
-                  overflow: "hidden",
-                  whiteSpace: "normal",
-                  textOverflow: "ellipsis",
-                }}
-              >
+              <Text h={{ base: "120px", md: "165px" }} noOfLines={{ base: 5, md: 7 }}>
                 {data.detail}
               </Text>
               <Flex pb={2} position="absolute" bottom={{ base: "0", md: "15px" }}>

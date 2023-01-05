@@ -174,7 +174,7 @@ const Post: NextPage = () => {
                 ベース
               </FormLabel>
               <RadioGroup id="base" onChange={setBase} value={base}>
-                <Stack direction="row">
+                <Stack direction="row" flexWrap="wrap">
                   <Radio value="とんこつ">とんこつ</Radio>
                   <Radio value="醤油">醤油</Radio>
                   <Radio value="味噌">味噌</Radio>
