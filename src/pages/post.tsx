@@ -1,22 +1,22 @@
 import {
-  Badge,
-  Box,
-  Divider,
-  Flex,
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
-  Heading,
-  HStack,
-  Input,
-  Radio,
-  RadioGroup,
-  Stack,
-  Textarea,
-  VStack,
+    Badge,
+    Box,
+    Divider,
+    Flex,
+    FormControl,
+    FormErrorMessage,
+    FormLabel,
+    Heading,
+    HStack,
+    Input,
+    Radio,
+    RadioGroup,
+    Stack,
+    Textarea,
+    VStack
 } from "@chakra-ui/react";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
-import { ref, uploadBytes } from "firebase/storage";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { validateImage } from "image-validator";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
@@ -44,7 +44,7 @@ const Post: NextPage = () => {
   } = useForm<Inputs>();
 
   const [loading, setIsLoading] = useState<boolean>(false);
-  const [base, setBase] = useState("とんこつ");
+  const [base, setBase] = useState<string>("とんこつ");
   const [file, setFile] = useState<File>(null!);
   const router = useRouter();
 
@@ -82,12 +82,11 @@ const Post: NextPage = () => {
   };
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    console.log(data.picture);
     try {
       setIsLoading(true);
 
       // 画像アップロード
-      const storageRef = ref(storage, `images/${file.name}_${file.lastModified}`);
+      const storageRef = await ref(storage, `images/${file.name}_${file.lastModified}`);
       await uploadBytes(storageRef, file)
         .then((snapshot) => {
           console.log(`アップロードに成功しました: ${snapshot}`);
@@ -96,17 +95,28 @@ const Post: NextPage = () => {
           console.log(`アップロードに失敗しました: ${error}`);
         });
 
-      const docRef = await addDoc(collection(db, "ramenData"), {
-        uid: "aaaaa",
-        storeName: data.storeName,
-        ramenName: data.ramenName,
-        base: base,
-        detail: data.review,
-        address: data.address,
-        picture: `images/${file.name}_${file.lastModified}`,
-        createTime: serverTimestamp(),
-        contributor: "テストユーザーあああ",
-      });
+      //firestore storageより画像データ取得
+      const gsReference = await ref(
+        storage,
+        `gs://portfolio-app-9fa16.appspot.com/images/${file.name}_${file.lastModified}`
+      );
+
+      await getDownloadURL(gsReference)
+        .then((url) => {
+          const docRef = addDoc(collection(db, "ramenData"), {
+            uid: "aaaaa",
+            storeName: data.storeName,
+            ramenName: data.ramenName,
+            base: base,
+            detail: data.review,
+            address: data.address,
+            picture: url,
+            createTime: serverTimestamp(),
+            contributor: "テストユーザーあああ",
+          });
+        })
+        .catch((err) => console.log(err));
+
       router.push("/");
       showMessage({ title: "投稿が完了しました。", status: "success" });
     } catch (err) {

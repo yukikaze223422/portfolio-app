@@ -19,6 +19,8 @@ const getDisplayTime = (e: any) => {
 
 const Home: NextPage = () => {
   const [ramenData, setRamenData] = useState([]);
+  const [image, setImage] = useState(null);
+  console.log(ramenData);
 
   useEffect(() => {
     const ramenDataRef = collection(db, "ramenData");
@@ -45,7 +47,7 @@ const Home: NextPage = () => {
             direction={{ base: "column", md: "row" }}
           >
             <Image
-              src="https://bit.ly/dan-abramov"
+              src={data.picture}
               alt={data.ramenName}
               w={{ base: "400px", md: "300px" }}
               h={{ base: "400px", md: "300px" }}
