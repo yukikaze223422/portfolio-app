@@ -108,7 +108,6 @@ const Post: NextPage = () => {
 
       await getDownloadURL(gsReference)
         .then((url) => {
-          console.log(url);
           addDoc(collection(db, "ramenData"), {
             uid: "aaaaa",
             storeName: data.storeName,

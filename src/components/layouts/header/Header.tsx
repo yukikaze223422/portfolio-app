@@ -22,7 +22,7 @@ const Header = () => {
 
   const onLogout = () => {
     alert("ログアウトしました");
-    router.push("/");
+    router.push("/login");
   };
 
   return (
