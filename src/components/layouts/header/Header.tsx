@@ -27,13 +27,7 @@ const Header = () => {
 
   return (
     <>
-      <Container
-        p={0}
-        borderBottom="1px"
-        borderColor="gray.200"
-        maxW="100%"
-        sx={{ position: "fixed", zIndex: "99", top: 0 }}
-      >
+      <Container p={0} borderBottom="1px" borderColor="gray.200" maxW="100%">
         <Container bg="orange.500" maxW="100%" p={1}>
           <Text color="white" fontSize="sm" align="center">
             おすすめのラーメンを共有するサイト

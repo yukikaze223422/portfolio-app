@@ -1,5 +1,5 @@
 import { Badge, Flex, Heading, Image, Stack, Text, VStack } from "@chakra-ui/react";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, orderBy, query } from "firebase/firestore";
 
 import { NextPage } from "next";
 import { useEffect, useState } from "react";
@@ -19,18 +19,20 @@ const getDisplayTime = (e: any) => {
 
 const Home: NextPage = () => {
   const [ramenData, setRamenData] = useState([]);
+  const [image, setImage] = useState(null);
+  console.log(ramenData);
 
   useEffect(() => {
     const ramenDataRef = collection(db, "ramenData");
-    getDocs(ramenDataRef).then((querySnapshot) => {
+    const sortRamenDataRef = query(ramenDataRef, orderBy("createTime", "desc"));
+    getDocs(sortRamenDataRef).then((querySnapshot) => {
       setRamenData(querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
     });
   }, []);
 
   return (
     <>
-      {/*レビューMax450文字 */}
-      <VStack pb={12}>
+      <VStack py={12} gap={4}>
         {ramenData.map((data) => (
           <Flex
             key={data.id}
@@ -45,13 +47,15 @@ const Home: NextPage = () => {
             direction={{ base: "column", md: "row" }}
           >
             <Image
-              src="https://bit.ly/dan-abramov"
-              alt="Dan Abramov"
-              m="0 auto"
+              src={data.picture}
+              alt={data.ramenName}
               w={{ base: "400px", md: "300px" }}
               h={{ base: "400px", md: "300px" }}
+              objectFit="cover"
+              borderRadius="10px"
+              mx="auto"
             />
-            <Stack>
+            <Stack width="100%">
               <Heading as="h1" textAlign={{ base: "center", md: "left" }}>
                 {data.storeName}
                 <Badge variant="solid" colorScheme="green" ml={2}>
@@ -68,26 +72,21 @@ const Home: NextPage = () => {
               >
                 {data.ramenName}
               </Heading>
-              <Text
-                h={{ base: "120px", md: "165px" }}
-                sx={{
-                  overflow: "hidden",
-                  whiteSpace: "normal",
-                  textOverflow: "ellipsis",
-                }}
-              >
+              <Text h={{ base: "120px", md: "165px" }} noOfLines={{ base: 5, md: 7 }}>
                 {data.detail}
               </Text>
               <Flex pb={2} position="absolute" bottom={{ base: "0", md: "15px" }}>
                 <Image
                   src="https://bit.ly/dan-abramov"
-                  alt={data.ramenName}
+                  alt={data.contributor}
                   borderRadius="999px"
                   w="25px"
                   h="25px"
                 />
-                <Text>&nbsp;{data.contributor}　</Text>
-                <Text>投稿日時：{getDisplayTime(data.createTime)}</Text>
+                <Flex direction={{ base: "column", md: "row" }}>
+                  <Text>&nbsp;{data.contributor}　</Text>
+                  <Text>投稿日時：{getDisplayTime(data.createTime)}</Text>
+                </Flex>
               </Flex>
             </Stack>
           </Flex>
