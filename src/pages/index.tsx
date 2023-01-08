@@ -51,6 +51,9 @@ const Home: NextPage = () => {
               alt={data.ramenName}
               w={{ base: "400px", md: "300px" }}
               h={{ base: "400px", md: "300px" }}
+              objectFit="cover"
+              borderRadius="10px"
+              mx="auto"
             />
             <Stack width="100%">
               <Heading as="h1" textAlign={{ base: "center", md: "left" }}>

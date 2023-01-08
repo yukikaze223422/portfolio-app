@@ -1,19 +1,19 @@
 import {
-    Badge,
-    Box,
-    Divider,
-    Flex,
-    FormControl,
-    FormErrorMessage,
-    FormLabel,
-    Heading,
-    HStack,
-    Input,
-    Radio,
-    RadioGroup,
-    Stack,
-    Textarea,
-    VStack
+  Badge,
+  Box,
+  Divider,
+  Flex,
+  FormControl,
+  FormErrorMessage,
+  FormLabel,
+  Heading,
+  HStack,
+  Input,
+  Radio,
+  RadioGroup,
+  Stack,
+  Textarea,
+  VStack,
 } from "@chakra-ui/react";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
@@ -86,24 +86,30 @@ const Post: NextPage = () => {
       setIsLoading(true);
 
       // 画像アップロード
-      const storageRef = await ref(storage, `images/${file.name}_${file.lastModified}`);
-      await uploadBytes(storageRef, file)
-        .then((snapshot) => {
-          console.log(`アップロードに成功しました: ${snapshot}`);
-        })
-        .catch((error) => {
-          console.log(`アップロードに失敗しました: ${error}`);
-        });
+      if (file != null) {
+        const storageRef = await ref(storage, `images/${file.name}_${file.lastModified}`);
+        await uploadBytes(storageRef, file)
+          .then((snapshot) => {
+            console.log(`アップロードに成功しました: ${snapshot}`);
+          })
+          .catch((error) => {
+            console.log(`アップロードに失敗しました: ${error}`);
+          });
+      }
 
-      //firestore storageより画像データ取得
+      //firestore storageより画像データ取得(画像未選択時はロゴ表示)
+      const ramenLogo: string = "gs://portfolio-app-9fa16.appspot.com/images/ramenLogo.png";
       const gsReference = await ref(
         storage,
-        `gs://portfolio-app-9fa16.appspot.com/images/${file.name}_${file.lastModified}`
+        file != null
+          ? `gs://portfolio-app-9fa16.appspot.com/images/${file.name}_${file.lastModified}`
+          : ramenLogo
       );
 
       await getDownloadURL(gsReference)
         .then((url) => {
-          const docRef = addDoc(collection(db, "ramenData"), {
+          console.log(url);
+          addDoc(collection(db, "ramenData"), {
             uid: "aaaaa",
             storeName: data.storeName,
             ramenName: data.ramenName,
