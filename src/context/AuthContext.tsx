@@ -49,7 +49,8 @@ const AuthUser = ({ children }: authProps) => {
   const { currentUser } = useAuthContext();
   const router = useRouter();
   useEffect(() => {
-    if (currentUser?.uid !== "") {
+    if (currentUser !== null) {
+      console.log(currentUser);
       return;
     } else {
       router.push("/login");
