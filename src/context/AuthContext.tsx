@@ -1,5 +1,6 @@
 import { User } from "@firebase/auth-types";
 import { onAuthStateChanged } from "firebase/auth";
+import { useRouter } from "next/router";
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 import { auth } from "../../firebase";
 
@@ -42,4 +43,21 @@ const AuthProvider = ({ children }: Props): JSX.Element => {
   }
 };
 
-export { useAuthContext, AuthProvider };
+type authProps = { children: JSX.Element };
+
+const AuthUser = ({ children }: authProps) => {
+  const { currentUser } = useAuthContext();
+  const router = useRouter();
+  useEffect(() => {
+    if (currentUser?.uid !== "") {
+      return;
+    } else {
+      router.push("/login");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentUser]);
+
+  return children;
+};
+
+export { useAuthContext, AuthProvider, AuthUser };

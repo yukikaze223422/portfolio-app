@@ -4,8 +4,6 @@ import { collection, getDocs, orderBy, query } from "firebase/firestore";
 import { NextPage } from "next";
 import { useEffect, useState } from "react";
 import { db } from "../../firebase";
-import { useAuthContext } from "../context/AuthContext";
-import Login from "./login";
 
 // timestampを、yy/mm/dd/hh/mm形式へ変換
 const getDisplayTime = (e: any) => {
@@ -21,7 +19,6 @@ const getDisplayTime = (e: any) => {
 
 const Home: NextPage = () => {
   const [ramenData, setRamenData] = useState([]);
-  const { currentUser } = useAuthContext();
 
   useEffect(() => {
     const ramenDataRef = collection(db, "ramenData");
@@ -31,74 +28,70 @@ const Home: NextPage = () => {
     });
   }, []);
 
-  if (!currentUser) {
-    return <Login />;
-  } else {
-    return (
-      <>
-        <VStack py={12} gap={4}>
-          {ramenData.map((data) => (
-            <Flex
-              key={data.id}
-              bg="orange.100"
-              p={4}
-              borderRadius="md"
-              shadow="md"
-              gap={4}
-              w="90%"
-              h={{ base: "700px", md: "330px" }}
-              position="relative"
-              direction={{ base: "column", md: "row" }}
-            >
-              <Image
-                src={data.picture}
-                alt={data.ramenName}
-                w={{ base: "400px", md: "300px" }}
-                h={{ base: "400px", md: "300px" }}
-                objectFit="cover"
-                borderRadius="10px"
-                mx="auto"
-              />
-              <Stack width="100%">
-                <Heading as="h1" textAlign={{ base: "center", md: "left" }}>
-                  {data.storeName}
-                  <Badge variant="solid" colorScheme="green" ml={2}>
-                    {data.base}
-                  </Badge>
-                </Heading>
-                <Heading
-                  as="h4"
-                  size="md"
-                  borderBottom="1px"
-                  borderColor="orange.300"
-                  pb={1}
-                  textAlign={{ base: "center", md: "left" }}
-                >
-                  {data.ramenName}
-                </Heading>
-                <Text h={{ base: "120px", md: "165px" }} noOfLines={{ base: 5, md: 7 }}>
-                  {data.detail}
-                </Text>
-                <Flex pb={2} position="absolute" bottom={{ base: "0", md: "15px" }}>
-                  <Image
-                    src="https://bit.ly/dan-abramov"
-                    alt={data.contributor}
-                    borderRadius="999px"
-                    w="25px"
-                    h="25px"
-                  />
-                  <Flex direction={{ base: "column", md: "row" }}>
-                    <Text>&nbsp;{data.contributor}　</Text>
-                    <Text>投稿日時：{getDisplayTime(data.createTime)}</Text>
-                  </Flex>
+  return (
+    <>
+      <VStack py={12} gap={4}>
+        {ramenData.map((data) => (
+          <Flex
+            key={data.id}
+            bg="orange.100"
+            p={4}
+            borderRadius="md"
+            shadow="md"
+            gap={4}
+            w="90%"
+            h={{ base: "700px", md: "330px" }}
+            position="relative"
+            direction={{ base: "column", md: "row" }}
+          >
+            <Image
+              src={data.picture}
+              alt={data.ramenName}
+              w={{ base: "400px", md: "300px" }}
+              h={{ base: "400px", md: "300px" }}
+              objectFit="cover"
+              borderRadius="10px"
+              mx="auto"
+            />
+            <Stack width="100%">
+              <Heading as="h1" textAlign={{ base: "center", md: "left" }}>
+                {data.storeName}
+                <Badge variant="solid" colorScheme="green" ml={2}>
+                  {data.base}
+                </Badge>
+              </Heading>
+              <Heading
+                as="h4"
+                size="md"
+                borderBottom="1px"
+                borderColor="orange.300"
+                pb={1}
+                textAlign={{ base: "center", md: "left" }}
+              >
+                {data.ramenName}
+              </Heading>
+              <Text h={{ base: "120px", md: "165px" }} noOfLines={{ base: 5, md: 7 }}>
+                {data.detail}
+              </Text>
+              <Flex pb={2} position="absolute" bottom={{ base: "0", md: "15px" }}>
+                <Image
+                  src="https://bit.ly/dan-abramov"
+                  alt={data.contributor}
+                  borderRadius="999px"
+                  w="25px"
+                  h="25px"
+                />
+                <Flex direction={{ base: "column", md: "row" }}>
+                  <Text>&nbsp;{data.contributor}　</Text>
+                  <Text>投稿日時：{getDisplayTime(data.createTime)}</Text>
                 </Flex>
-              </Stack>
-            </Flex>
-          ))}
-        </VStack>
-      </>
-    );
-  }
+              </Flex>
+            </Stack>
+          </Flex>
+        ))}
+      </VStack>
+    </>
+  );
 };
 
 export default Home;
