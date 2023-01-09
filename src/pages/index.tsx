@@ -71,8 +71,8 @@ const Home: NextPage = () => {
                 {data.ramenName}
               </Heading>
               <Text
-                h={{ base: "75px", sm: "120px", md: "165px" }}
-                noOfLines={{ base: 3, sm: 5, md: 7 }}
+                h={{ base: "75px", sm: "120px", md: "120px", lg: "165" }}
+                noOfLines={{ base: 3, sm: 5, md: 5, lg: 7 }}
               >
                 {data.detail}
               </Text>
