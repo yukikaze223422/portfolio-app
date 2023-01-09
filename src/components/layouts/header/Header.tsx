@@ -1,8 +1,9 @@
-import { Container, Flex, Image, Link, Text, useDisclosure } from "@chakra-ui/react";
+import { Container, Flex, Text, useDisclosure } from "@chakra-ui/react";
 import { Timestamp } from "firebase/firestore";
-import NextLink from "next/link";
 import { NextRouter, useRouter } from "next/router";
+import { useAuthContext } from "../../../context/AuthContext";
 import { MenuIconButton } from "../../elements/Button/MenuIconButton";
+import { HeaderLoginMenu, HeaderMenu } from "../../molecules/HeaderMenu";
 import MenuDrawer from "../../molecules/MenuDrawer";
 
 type User = {
@@ -17,13 +18,9 @@ type User = {
 };
 
 const Header = () => {
+  const { currentUser } = useAuthContext();
   const { isOpen, onOpen, onClose, onToggle } = useDisclosure();
   const router: NextRouter = useRouter();
-
-  const onLogout = () => {
-    alert("ログアウトしました");
-    router.push("/login");
-  };
 
   return (
     <>
@@ -35,30 +32,7 @@ const Header = () => {
         </Container>
         <Container bg="white" py={2} px={4} maxW="100%">
           <Flex as="nav" justify="space-between" align="center">
-            <Link as={NextLink} href="/">
-              <Image src="/logo.png" alt="logo" width="165px" height="55px" />
-            </Link>
-            <Flex justify="flex-end" fontSize="md" display={{ base: "none", md: "flex" }}>
-              <Link
-                as={NextLink}
-                href="/login"
-                pr={5}
-                fontWeight="bold"
-                color="gray.500"
-                _hover={{ opacity: 0.8, color: "orange.300", textDecoration: "none" }}
-              >
-                ログイン
-              </Link>
-              <Link
-                as={NextLink}
-                href="/signup"
-                fontWeight="bold"
-                color="gray.500"
-                _hover={{ opacity: 0.8, color: "orange.300", textDecoration: "none" }}
-              >
-                サインアップ
-              </Link>
-            </Flex>
+            {currentUser === null ? <HeaderLoginMenu /> : <HeaderMenu />}
             <MenuIconButton onOpen={onOpen} />
           </Flex>
         </Container>
