@@ -70,7 +70,10 @@ const Home: NextPage = () => {
               >
                 {data.ramenName}
               </Heading>
-              <Text h={{ base: "120px", md: "165px" }} noOfLines={{ base: 5, md: 7 }}>
+              <Text
+                h={{ base: "75px", sm: "120px", md: "165px" }}
+                noOfLines={{ base: 3, sm: 5, md: 7 }}
+              >
                 {data.detail}
               </Text>
               <Flex pb={2} position="absolute" bottom={{ base: "0", md: "15px" }}>
