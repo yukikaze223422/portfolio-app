@@ -50,8 +50,12 @@ const AuthUser = ({ children }: authProps) => {
   const router = useRouter();
   useEffect(() => {
     if (currentUser !== null) {
-      console.log(currentUser);
-      return;
+      console.log(router.asPath);
+      if (decodeURI(router.asPath) == "/login/") {
+        router.push("/");
+      } else {
+        return;
+      }
     } else {
       router.push("/login");
     }
