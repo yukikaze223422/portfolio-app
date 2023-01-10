@@ -19,7 +19,6 @@ const getDisplayTime = (e: any) => {
 
 const Home: NextPage = () => {
   const [ramenData, setRamenData] = useState([]);
-
   useEffect(() => {
     const ramenDataRef = collection(db, "ramenData");
     const sortRamenDataRef = query(ramenDataRef, orderBy("createTime", "desc"));

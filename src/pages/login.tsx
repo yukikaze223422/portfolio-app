@@ -11,7 +11,12 @@ import {
   Link,
   Stack,
 } from "@chakra-ui/react";
-import { GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
+import {
+  GoogleAuthProvider,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  updateProfile,
+} from "firebase/auth";
 import type { NextPage } from "next";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
@@ -66,6 +71,9 @@ const Login: NextPage = () => {
     try {
       setIsLoading(true);
       await signInWithEmailAndPassword(auth, guestEmail, guestPassword);
+      await updateProfile(auth.currentUser, {
+        displayName: "Guest",
+      });
       router.push("/");
       showMessage({ title: "ログインしました。", status: "success" });
     } catch (err) {

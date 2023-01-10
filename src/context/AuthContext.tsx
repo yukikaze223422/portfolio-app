@@ -25,16 +25,10 @@ const AuthProvider = ({ children }: Props): JSX.Element => {
     loading,
   };
 
-  useEffect(() => {
-    const unsubscribed = onAuthStateChanged(auth, (user: User | null) => {
-      console.log(user);
-      setCurrentUser(user);
-      setLoading(false);
-    });
-    return () => {
-      unsubscribed();
-    };
-  }, []);
+  onAuthStateChanged(auth, (user: User | null) => {
+    setCurrentUser(user);
+    setLoading(false);
+  });
 
   if (loading) {
     return <p>loading...</p>;
@@ -51,7 +45,7 @@ const AuthUser = ({ children }: authProps) => {
   useEffect(() => {
     if (currentUser !== null) {
       console.log(router.asPath);
-      if (decodeURI(router.asPath) == "/login/") {
+      if (decodeURI(router.asPath) == "/login/" || "/signup/") {
         router.push("/");
       } else {
         return;

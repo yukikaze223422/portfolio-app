@@ -3,7 +3,8 @@ import { Timestamp } from "firebase/firestore";
 import { NextRouter, useRouter } from "next/router";
 import { useAuthContext } from "../../../context/AuthContext";
 import { MenuIconButton } from "../../elements/Button/MenuIconButton";
-import { HeaderLoginMenu, HeaderMenu } from "../../molecules/HeaderMenu";
+import HeaderLoginMenu from "../../molecules/HeaderLoginMenu";
+import HeaderMenu from "../../molecules/HeaderMenu";
 import MenuDrawer from "../../molecules/MenuDrawer";
 
 type User = {

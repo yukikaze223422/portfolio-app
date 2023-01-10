@@ -4,29 +4,6 @@ import { NextRouter, useRouter } from "next/router";
 import { auth } from "../../../firebase";
 import { useMessage } from "../../hooks/useMessage";
 
-const HeaderLoginMenuDrawer = () => {
-  const router: NextRouter = useRouter();
-
-  const onClickLogin = () => {
-    router.push("/login");
-  };
-
-  const onClickSignup = () => {
-    router.push("/signup");
-  };
-
-  return (
-    <>
-      <Button w="80%" bg="white" borderBottom="1px" borderColor="gray.200" onClick={onClickLogin}>
-        ログイン
-      </Button>
-      <Button w="80%" bg="white" borderBottom="1px" borderColor="gray.200" onClick={onClickSignup}>
-        サインイン
-      </Button>
-    </>
-  );
-};
-
 const HeaderMenuDrawer = () => {
   const { showMessage } = useMessage();
   const router: NextRouter = useRouter();
@@ -60,4 +37,4 @@ const HeaderMenuDrawer = () => {
   );
 };
 
-export { HeaderLoginMenuDrawer, HeaderMenuDrawer };
+export default HeaderMenuDrawer;

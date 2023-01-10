@@ -12,7 +12,8 @@ import { NextRouter, useRouter } from "next/router";
 import { auth } from "../../../firebase";
 import { useAuthContext } from "../../context/AuthContext";
 import { useMessage } from "../../hooks/useMessage";
-import { HeaderLoginMenuDrawer, HeaderMenuDrawer } from "./HeaderMenuDrawer";
+import HeaderLoginMenuDrawer from "./HeaderLoginMenuDrawer";
+import HeaderMenuDrawer from "./HeaderMenuDrawer";
 
 type Props = {
   onClose: () => void;

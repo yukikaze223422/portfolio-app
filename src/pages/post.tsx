@@ -24,6 +24,7 @@ import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { db, storage } from "../../firebase";
 import PrimaryButton from "../components/elements/Button/PrimaryButton";
+import { useAuthContext } from "../context/AuthContext";
 import { useMessage } from "../hooks/useMessage";
 
 type Inputs = {
@@ -37,6 +38,7 @@ type Inputs = {
 
 const Post: NextPage = () => {
   const { showMessage } = useMessage();
+  const { currentUser } = useAuthContext();
   const {
     register,
     handleSubmit,
@@ -108,8 +110,9 @@ const Post: NextPage = () => {
 
       await getDownloadURL(gsReference)
         .then((url) => {
+          console.log(currentUser.displayName);
           addDoc(collection(db, "ramenData"), {
-            uid: "aaaaa",
+            uid: currentUser.uid,
             storeName: data.storeName,
             ramenName: data.ramenName,
             base: base,
@@ -117,7 +120,7 @@ const Post: NextPage = () => {
             address: data.address,
             picture: url,
             createTime: serverTimestamp(),
-            contributor: "テストユーザーあああ",
+            contributor: currentUser.displayName,
           });
         })
         .catch((err) => console.log(err));
