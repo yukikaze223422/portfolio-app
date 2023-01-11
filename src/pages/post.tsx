@@ -110,7 +110,6 @@ const Post: NextPage = () => {
 
       await getDownloadURL(gsReference)
         .then((url) => {
-          console.log(currentUser.displayName);
           addDoc(collection(db, "ramenData"), {
             uid: currentUser.uid,
             storeName: data.storeName,
@@ -125,7 +124,7 @@ const Post: NextPage = () => {
         })
         .catch((err) => console.log(err));
 
-      router.push("/");
+      await router.push("/");
       showMessage({ title: "投稿が完了しました。", status: "success" });
     } catch (err) {
       showMessage({ title: "投稿できませんでした。", status: "error" });
