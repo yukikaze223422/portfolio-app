@@ -55,7 +55,10 @@ const Login: NextPage = () => {
       setIsLoading(true);
       const provider = new GoogleAuthProvider();
       await signInWithPopup(auth, provider);
-      const user = auth.currentUser;
+      const user = auth.currentUser.displayName;
+      await updateProfile(auth.currentUser, {
+        displayName: user,
+      });
       router.push("/");
       showMessage({ title: "ログインしました。", status: "success" });
     } catch {

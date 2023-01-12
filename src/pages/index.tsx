@@ -4,6 +4,7 @@ import { NextPage } from "next";
 import { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate"; // インポートはこれで完了！
 import { db } from "../../firebase";
+import { useAuthContext } from "../context/AuthContext";
 
 // timestampを、yy/mm/dd/hh/mm形式へ変換
 const getDisplayTime = (e: any) => {
@@ -18,6 +19,7 @@ const getDisplayTime = (e: any) => {
 };
 
 const Home: NextPage = () => {
+  const { currentUser } = useAuthContext();
   const [ramenData, setRamenData] = useState([]);
   const [offset, setOffset] = useState(0); // 何番目のアイテムから表示するか
   const perPage: number = 4; // 1ページあたりに表示したいアイテムの数
@@ -105,15 +107,15 @@ const Home: NextPage = () => {
           previousLabel={"<"}
           nextLabel={">"}
           breakLabel={"..."}
-          pageCount={Math.ceil(ramenData.length / perPage)} // 全部のページ数。端数の場合も考えて切り上げに。
-          marginPagesDisplayed={2} // 一番最初と最後を基準にして、そこからいくつページ数を表示するか
-          pageRangeDisplayed={5} // アクティブなページを基準にして、そこからいくつページ数を表示するか
-          onPageChange={handlePageChange} // クリック時のfunction
-          containerClassName={"pagination"} // ページネーションであるulに着くクラス名
-          activeClassName={"active"} // アクティブなページのliに着くクラス名
-          previousClassName={"pagination__previous"} // 「<」のliに着けるクラス名
-          nextClassName={"pagination__next"} // 「>」のliに着けるクラス名
-          disabledClassName={"pagination__disabled"} // 使用不可の「<,>」に着くクラス名
+          pageCount={Math.ceil(ramenData.length / perPage)}
+          marginPagesDisplayed={2}
+          pageRangeDisplayed={5}
+          onPageChange={handlePageChange}
+          containerClassName={"pagination"}
+          activeClassName={"active"}
+          previousClassName={"pagination__previous"}
+          nextClassName={"pagination__next"}
+          disabledClassName={"pagination__disabled"}
         />
       </VStack>
     </>
