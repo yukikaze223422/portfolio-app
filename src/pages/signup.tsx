@@ -15,7 +15,7 @@ import {
   Link,
   Stack,
 } from "@chakra-ui/react";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import type { NextPage } from "next";
 import NextLink from "next/link";
@@ -52,7 +52,6 @@ const SignUp: NextPage = () => {
     try {
       setIsLoading(true);
       const newUser = await createUserWithEmailAndPassword(auth, data.email, data.password);
-      console.log(newUser.user);
       const uid = newUser.user.uid;
       if (newUser) {
         await setDoc(doc(db, "users", uid), {
@@ -60,6 +59,10 @@ const SignUp: NextPage = () => {
           username: data.username,
           email: data.email,
           photoUrl: newUser.user.photoURL,
+        });
+
+        await updateProfile(auth.currentUser, {
+          displayName: data.username,
         });
       }
       router.push("/");

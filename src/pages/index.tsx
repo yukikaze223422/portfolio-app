@@ -1,9 +1,10 @@
 import { Badge, Flex, Heading, Image, Stack, Text, VStack } from "@chakra-ui/react";
 import { collection, getDocs, orderBy, query } from "firebase/firestore";
-
 import { NextPage } from "next";
 import { useEffect, useState } from "react";
+import ReactPaginate from "react-paginate"; // インポートはこれで完了！
 import { db } from "../../firebase";
+import { useAuthContext } from "../context/AuthContext";
 
 // timestampを、yy/mm/dd/hh/mm形式へ変換
 const getDisplayTime = (e: any) => {
@@ -18,9 +19,10 @@ const getDisplayTime = (e: any) => {
 };
 
 const Home: NextPage = () => {
+  const { currentUser } = useAuthContext();
   const [ramenData, setRamenData] = useState([]);
-  const [image, setImage] = useState(null);
-  console.log(ramenData);
+  const [offset, setOffset] = useState(0); // 何番目のアイテムから表示するか
+  const perPage: number = 4; // 1ページあたりに表示したいアイテムの数
 
   useEffect(() => {
     const ramenDataRef = collection(db, "ramenData");
@@ -30,10 +32,16 @@ const Home: NextPage = () => {
     });
   }, []);
 
+  // クリック時のfunction
+  const handlePageChange = (data: any) => {
+    let page_number = data["selected"]; // クリックした部分のページ数が{selected: 2}のような形で返ってくる
+    setOffset(page_number * perPage); // offsetを変更し、表示開始するアイテムの番号を変更
+  };
+
   return (
     <>
       <VStack py={12} gap={4}>
-        {ramenData.map((data) => (
+        {ramenData.slice(offset, offset + perPage).map((data) => (
           <Flex
             key={data.id}
             bg="orange.100"
@@ -72,7 +80,10 @@ const Home: NextPage = () => {
               >
                 {data.ramenName}
               </Heading>
-              <Text h={{ base: "120px", md: "165px" }} noOfLines={{ base: 5, md: 7 }}>
+              <Text
+                h={{ base: "75px", sm: "120px", md: "120px", lg: "165" }}
+                noOfLines={{ base: 3, sm: 5, md: 5, lg: 7 }}
+              >
                 {data.detail}
               </Text>
               <Flex pb={2} position="absolute" bottom={{ base: "0", md: "15px" }}>
@@ -91,6 +102,21 @@ const Home: NextPage = () => {
             </Stack>
           </Flex>
         ))}
+        {/* ページネーションを置きたい箇所に以下のコンポーネントを配置 */}
+        <ReactPaginate
+          previousLabel={"<"}
+          nextLabel={">"}
+          breakLabel={"..."}
+          pageCount={Math.ceil(ramenData.length / perPage)}
+          marginPagesDisplayed={2}
+          pageRangeDisplayed={5}
+          onPageChange={handlePageChange}
+          containerClassName={"pagination"}
+          activeClassName={"active"}
+          previousClassName={"pagination__previous"}
+          nextClassName={"pagination__next"}
+          disabledClassName={"pagination__disabled"}
+        />
       </VStack>
     </>
   );

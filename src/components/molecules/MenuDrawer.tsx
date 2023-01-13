@@ -10,7 +10,10 @@ import {
 import { signOut } from "firebase/auth";
 import { NextRouter, useRouter } from "next/router";
 import { auth } from "../../../firebase";
+import { useAuthContext } from "../../context/AuthContext";
 import { useMessage } from "../../hooks/useMessage";
+import HeaderLoginMenuDrawer from "./HeaderLoginMenuDrawer";
+import HeaderMenuDrawer from "./HeaderMenuDrawer";
 
 type Props = {
   onClose: () => void;
@@ -20,6 +23,7 @@ type Props = {
 
 const MenuDrawer = (props: Props) => {
   const { onClose, onToggle, isOpen } = props;
+  const { currentUser } = useAuthContext();
   const { showMessage } = useMessage();
   const router: NextRouter = useRouter();
 
@@ -38,28 +42,8 @@ const MenuDrawer = (props: Props) => {
       <DrawerOverlay />
       <DrawerContent onClick={onToggle}>
         <DrawerBody p={4}>
-          <VStack>
-            <Button
-              w="80%"
-              bg="white"
-              borderBottom="1px"
-              borderColor="gray.200"
-              onClick={onClickHome}
-            >
-              ホーム
-            </Button>
-            <Button
-              w="80%"
-              bg="white"
-              borderBottom="1px"
-              borderColor="gray.200"
-              onClick={onClickLogout}
-            >
-              ログアウト
-            </Button>
-          </VStack>
+          <VStack>{currentUser === null ? <HeaderLoginMenuDrawer /> : <HeaderMenuDrawer />}</VStack>
         </DrawerBody>
-
         <DrawerFooter>
           <Button w="100%" variant="outline" mr={3} onClick={onClose}>
             Cancel
