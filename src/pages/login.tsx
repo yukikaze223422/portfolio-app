@@ -30,7 +30,7 @@ import { useMessage } from "../hooks/useMessage";
 const Login: NextPage = () => {
   const { showMessage } = useMessage();
 
-  const [loading, setIsLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [isRevealPassword, setIsRevealPassword] = useState<boolean>(false);
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -39,20 +39,20 @@ const Login: NextPage = () => {
   //通常ログイン処理
   const emailLogin = async (email: string, password: string) => {
     try {
-      setIsLoading(true);
+      setLoading(true);
       await signInWithEmailAndPassword(auth, email, password);
       router.push("/");
       showMessage({ title: "ログインしました。", status: "success" });
     } catch (err) {
       showMessage({ title: "ログインできませんでした。", status: "error" });
     }
-    setIsLoading(false);
+    setLoading(false);
   };
 
   //Googleログイン処理
   const googleLogin = async (): Promise<void> => {
     try {
-      setIsLoading(true);
+      setLoading(true);
       const provider = new GoogleAuthProvider();
       await signInWithPopup(auth, provider);
       const user = auth.currentUser.displayName;
@@ -64,7 +64,7 @@ const Login: NextPage = () => {
     } catch {
       showMessage({ title: "ログインできませんでした。", status: "error" });
     }
-    setIsLoading(false);
+    setLoading(false);
   };
 
   //ゲストログイン処理
@@ -72,7 +72,7 @@ const Login: NextPage = () => {
     const guestEmail = "guest@gmai.com";
     const guestPassword = "guest2234";
     try {
-      setIsLoading(true);
+      setLoading(true);
       await signInWithEmailAndPassword(auth, guestEmail, guestPassword);
       await updateProfile(auth.currentUser, {
         displayName: "Guest",
@@ -82,7 +82,7 @@ const Login: NextPage = () => {
     } catch (err) {
       showMessage({ title: "ログインできませんでした。", status: "error" });
     }
-    setIsLoading(false);
+    setLoading(false);
   };
 
   return (

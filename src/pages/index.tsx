@@ -1,10 +1,10 @@
-import { Badge, Flex, Heading, Image, Stack, Text, VStack } from "@chakra-ui/react";
+import { Badge, Flex, Heading, Image, Link, Stack, Text, VStack } from "@chakra-ui/react";
 import { collection, getDocs, orderBy, query } from "firebase/firestore";
 import { NextPage } from "next";
+import NextLink from "next/link";
 import { useEffect, useState } from "react";
-import ReactPaginate from "react-paginate"; // インポートはこれで完了！
+import ReactPaginate from "react-paginate";
 import { db } from "../../firebase";
-import { useAuthContext } from "../context/AuthContext";
 
 // timestampを、yy/mm/dd/hh/mm形式へ変換
 const getDisplayTime = (e: any) => {
@@ -19,7 +19,6 @@ const getDisplayTime = (e: any) => {
 };
 
 const Home: NextPage = () => {
-  const { currentUser } = useAuthContext();
   const [ramenData, setRamenData] = useState([]);
   const [offset, setOffset] = useState(0); // 何番目のアイテムから表示するか
   const perPage: number = 4; // 1ページあたりに表示したいアイテムの数
@@ -28,7 +27,12 @@ const Home: NextPage = () => {
     const ramenDataRef = collection(db, "ramenData");
     const sortRamenDataRef = query(ramenDataRef, orderBy("createTime", "desc"));
     getDocs(sortRamenDataRef).then((querySnapshot) => {
-      setRamenData(querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+      setRamenData(
+        querySnapshot.docs.map((doc) => ({
+          ...doc.data({ serverTimestamps: "estimate" }),
+          id: doc.id,
+        }))
+      );
     });
   }, []);
 
@@ -42,65 +46,71 @@ const Home: NextPage = () => {
     <>
       <VStack py={12} gap={4}>
         {ramenData.slice(offset, offset + perPage).map((data) => (
-          <Flex
+          <Link
+            as={NextLink}
+            href={`${data.id}/detail`}
             key={data.id}
-            bg="orange.100"
-            p={4}
-            borderRadius="md"
-            shadow="md"
-            gap={4}
             w="90%"
-            h={{ base: "700px", md: "330px" }}
-            position="relative"
-            direction={{ base: "column", md: "row" }}
+            _hover={{ opacity: 0.8, color: "orange.500", textDecoration: "none" }}
           >
-            <Image
-              src={data.picture}
-              alt={data.ramenName}
-              w={{ base: "400px", md: "300px" }}
-              h={{ base: "400px", md: "300px" }}
-              objectFit="cover"
-              borderRadius="10px"
-              mx="auto"
-            />
-            <Stack width="100%">
-              <Heading as="h1" textAlign={{ base: "center", md: "left" }}>
-                {data.storeName}
-                <Badge variant="solid" colorScheme="green" ml={2}>
-                  {data.base}
-                </Badge>
-              </Heading>
-              <Heading
-                as="h4"
-                size="md"
-                borderBottom="1px"
-                borderColor="orange.300"
-                pb={1}
-                textAlign={{ base: "center", md: "left" }}
-              >
-                {data.ramenName}
-              </Heading>
-              <Text
-                h={{ base: "75px", sm: "120px", md: "120px", lg: "165" }}
-                noOfLines={{ base: 3, sm: 5, md: 5, lg: 7 }}
-              >
-                {data.detail}
-              </Text>
-              <Flex pb={2} position="absolute" bottom={{ base: "0", md: "15px" }}>
-                <Image
-                  src="https://bit.ly/dan-abramov"
-                  alt={data.contributor}
-                  borderRadius="999px"
-                  w="25px"
-                  h="25px"
-                />
-                <Flex direction={{ base: "column", md: "row" }}>
-                  <Text>&nbsp;{data.contributor}　</Text>
-                  <Text>投稿日時：{getDisplayTime(data.createTime)}</Text>
+            <Flex
+              bg="orange.100"
+              p={4}
+              borderRadius="md"
+              shadow="md"
+              gap={4}
+              h={{ base: "700px", md: "330px" }}
+              position="relative"
+              direction={{ base: "column", md: "row" }}
+            >
+              <Image
+                src={data.picture}
+                alt={data.ramenName}
+                w={{ base: "400px", md: "300px" }}
+                h={{ base: "400px", md: "300px" }}
+                objectFit="cover"
+                borderRadius="10px"
+                mx="auto"
+              />
+              <Stack width="100%">
+                <Heading as="h1" textAlign={{ base: "center", md: "left" }}>
+                  {data.storeName}
+                  <Badge variant="solid" colorScheme="green" ml={2}>
+                    {data.base}
+                  </Badge>
+                </Heading>
+                <Heading
+                  as="h4"
+                  size="md"
+                  borderBottom="1px"
+                  borderColor="orange.300"
+                  pb={1}
+                  textAlign={{ base: "center", md: "left" }}
+                >
+                  {data.ramenName}
+                </Heading>
+                <Text
+                  h={{ base: "75px", sm: "120px", md: "120px", lg: "165" }}
+                  noOfLines={{ base: 3, sm: 5, md: 5, lg: 7 }}
+                >
+                  {data.detail}
+                </Text>
+                <Flex pb={2} position="absolute" bottom={{ base: "0", md: "15px" }}>
+                  <Image
+                    src="https://bit.ly/dan-abramov"
+                    alt={data.contributor}
+                    borderRadius="999px"
+                    w="25px"
+                    h="25px"
+                  />
+                  <Flex direction={{ base: "column", md: "row" }}>
+                    <Text>&nbsp;{data.contributor}　</Text>
+                    <Text>投稿日時：{getDisplayTime(data.createTime)}</Text>
+                  </Flex>
                 </Flex>
-              </Flex>
-            </Stack>
-          </Flex>
+              </Stack>
+            </Flex>
+          </Link>
         ))}
         {/* ページネーションを置きたい箇所に以下のコンポーネントを配置 */}
         <ReactPaginate
