@@ -105,11 +105,13 @@ const Detail: NextPage = () => {
             {posts?.detail}
           </Text>
         </Box>
-        <LoadScript googleMapsApiKey="AIzaSyC-7ksgiOxvDnluE1jR27Ynu9NZIAbIdw0">
-          <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={17}>
-            <MarkerF position={positionAkiba} />
-          </GoogleMap>
-        </LoadScript>
+        {posts?.address !== undefined ? (
+          <LoadScript googleMapsApiKey="AIzaSyC-7ksgiOxvDnluE1jR27Ynu9NZIAbIdw0">
+            <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={17}>
+              <MarkerF position={positionAkiba} />
+            </GoogleMap>
+          </LoadScript>
+        ) : null}
         {/* 戻る/編集ボタン部分 */}
         <Stack>
           {/* 編集ボタン：ログインしているユーザーと、投稿者idが一致した場合のみ表示*/}
