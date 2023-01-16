@@ -25,10 +25,10 @@ const Detail: NextPage = () => {
   const router = useRouter();
   const { currentUser } = useAuthContext();
   const { detail }: any = router.query;
-  const [loading, setLoading] = useState<boolean>(false);
   const [posts, setPosts] = useState<Data | null>(null);
   const [lat, setLat] = useState<number>();
   const [lng, setLng] = useState<number>();
+  const [geocoder, setGeocoder] = useState<undefined | google.maps.Geocoder>(undefined);
 
   useEffect(() => {
     const docRef = doc(db, "ramenData", detail);
@@ -46,9 +46,10 @@ const Detail: NextPage = () => {
           picture: docSnap.data().picture,
           contributor: docSnap.data().contributor,
         });
-        if (typeof docSnap.data().address !== "undefined") {
-          const geocoder = new window.google.maps.Geocoder();
-          await geocoder.geocode({ address: docSnap.data().address }, (results, status) => {
+        if (window.google !== undefined && posts?.address !== null) {
+          //const geocoder = new window.google.maps.Geocoder();
+          geocoder.geocode({ address: docSnap.data().address }, (results, status) => {
+            console.log("aaaa");
             if (status === "OK") {
               setLat(results[0].geometry.location.lat()),
                 setLng(results[0].geometry.location.lng());
@@ -63,8 +64,23 @@ const Detail: NextPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const createOffsetGeocoder = () => {
+    return setGeocoder(new window.google.maps.Geocoder());
+  };
+
+  /*   if (geocoder !== undefined && posts?.address !== null) {
+    //const geocoder = new window.google.maps.Geocoder();
+    geocoder.geocode({ address: posts?.address }, (results, status) => {
+      console.log("aaaa");
+      if (status === "OK") {
+        setLat(results[0].geometry.location.lat()), setLng(results[0].geometry.location.lng());
+      }
+    });
+  } */
+
   console.log(lat);
   console.log(lng);
+  console.log(window.google);
 
   return (
     <Flex flexDirection="column" align="center" w="full">
@@ -99,15 +115,22 @@ const Detail: NextPage = () => {
           )}
 
           {/* 戻るボタン */}
-          <NextLink as="Button" href="/" passHref>
+          <NextLink href="/" passHref>
             <PrimaryButton bg="gray.400" color="white" type="button" w="40%">
               戻る
             </PrimaryButton>
           </NextLink>
         </Stack>
-        {window.google !== undefined ? (
-          <LoadScript googleMapsApiKey="AIzaSyC-7ksgiOxvDnluE1jR27Ynu9NZIAbIdw0"></LoadScript>
-        ) : null}
+        {window.google === undefined ? (
+          <>
+            <LoadScript
+              googleMapsApiKey="AIzaSyC-7ksgiOxvDnluE1jR27Ynu9NZIAbIdw0"
+              onLoad={() => createOffsetGeocoder()}
+            ></LoadScript>
+          </>
+        ) : (
+          <></>
+        )}
         <p>緯度：{lat}</p>
         <p>緯度：{lng}</p>
       </Stack>
