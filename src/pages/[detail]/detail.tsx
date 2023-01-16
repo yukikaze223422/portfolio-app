@@ -1,4 +1,5 @@
 import { Box, Flex, Image, Stack, Text } from "@chakra-ui/react";
+import { GoogleMap, LoadScript, MarkerF } from "@react-google-maps/api";
 import { doc, getDoc } from "firebase/firestore";
 import { NextPage } from "next";
 import NextLink from "next/link";
@@ -26,8 +27,23 @@ const Detail: NextPage = () => {
   const { currentUser } = useAuthContext();
   const { detail }: any = router.query;
   const [posts, setPosts] = useState<Data | null>(null);
-  const [lat, setLat] = useState<number>();
-  const [lng, setLng] = useState<number>();
+  const [lat, setLat] = useState<number | null>(null);
+  const [lng, setLng] = useState<number | null>(null);
+
+  const containerStyle = {
+    width: "400px",
+    height: "400px",
+  };
+
+  const center = {
+    lat: lat,
+    lng: lng,
+  };
+
+  const positionAkiba = {
+    lat: lat,
+    lng: lng,
+  };
 
   useEffect(() => {
     const docRef = doc(db, "ramenData", detail);
@@ -89,6 +105,11 @@ const Detail: NextPage = () => {
             {posts?.detail}
           </Text>
         </Box>
+        <LoadScript googleMapsApiKey="AIzaSyC-7ksgiOxvDnluE1jR27Ynu9NZIAbIdw0">
+          <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={17}>
+            <MarkerF position={positionAkiba} />
+          </GoogleMap>
+        </LoadScript>
         {/* 戻る/編集ボタン部分 */}
         <Stack>
           {/* 編集ボタン：ログインしているユーザーと、投稿者idが一致した場合のみ表示*/}
