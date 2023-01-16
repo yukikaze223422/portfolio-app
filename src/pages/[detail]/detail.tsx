@@ -105,7 +105,7 @@ const Detail: NextPage = () => {
             {posts?.detail}
           </Text>
         </Box>
-        {posts?.address !== undefined ? (
+        {lng !== null && lat !== null ? (
           <LoadScript googleMapsApiKey="AIzaSyC-7ksgiOxvDnluE1jR27Ynu9NZIAbIdw0">
             <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={17}>
               <MarkerF position={positionAkiba} />
