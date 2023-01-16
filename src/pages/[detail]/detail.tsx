@@ -61,20 +61,22 @@ const Detail: NextPage = () => {
           picture: docSnap.data().picture,
           contributor: docSnap.data().contributor,
         });
-        Geocode.setApiKey("AIzaSyC-7ksgiOxvDnluE1jR27Ynu9NZIAbIdw0");
-        await Geocode.fromAddress(docSnap.data().address).then(
-          (response) => {
-            console.log(response);
-            const { lat, lng } = response.results[0].geometry.location;
-            setLat(lat);
-            setLng(lng);
-          },
-          (error) => {
-            console.error(error);
-          }
-        );
-      } else {
-        console.log("データが取得できませんでした。");
+        if (docSnap.data().address !== "") {
+          Geocode.setApiKey("AIzaSyC-7ksgiOxvDnluE1jR27Ynu9NZIAbIdw0");
+          await Geocode.fromAddress(docSnap.data().address).then(
+            (response) => {
+              console.log(response);
+              const { lat, lng } = response.results[0].geometry.location;
+              setLat(lat);
+              setLng(lng);
+            },
+            (error) => {
+              console.error(error);
+            }
+          );
+        } else {
+          console.log("データが取得できませんでした。");
+        }
       }
     };
     readPost();
