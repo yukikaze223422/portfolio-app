@@ -1,10 +1,10 @@
 import { Box, Flex, Image, Stack, Text } from "@chakra-ui/react";
-import { LoadScript } from "@react-google-maps/api";
 import { doc, getDoc } from "firebase/firestore";
 import { NextPage } from "next";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import Geocode from "react-geocode";
 import { db } from "../../../firebase";
 import PrimaryButton from "../../components/elements/Button/PrimaryButton";
 import { useAuthContext } from "../../context/AuthContext";
@@ -28,7 +28,6 @@ const Detail: NextPage = () => {
   const [posts, setPosts] = useState<Data | null>(null);
   const [lat, setLat] = useState<number>();
   const [lng, setLng] = useState<number>();
-  const [geocoder, setGeocoder] = useState<undefined | google.maps.Geocoder>(undefined);
 
   useEffect(() => {
     const docRef = doc(db, "ramenData", detail);
@@ -46,16 +45,18 @@ const Detail: NextPage = () => {
           picture: docSnap.data().picture,
           contributor: docSnap.data().contributor,
         });
-        if (window.google !== undefined && posts?.address !== null) {
-          //const geocoder = new window.google.maps.Geocoder();
-          geocoder.geocode({ address: docSnap.data().address }, (results, status) => {
-            console.log("aaaa");
-            if (status === "OK") {
-              setLat(results[0].geometry.location.lat()),
-                setLng(results[0].geometry.location.lng());
-            }
-          });
-        }
+        Geocode.setApiKey("AIzaSyC-7ksgiOxvDnluE1jR27Ynu9NZIAbIdw0");
+        await Geocode.fromAddress(docSnap.data().address).then(
+          (response) => {
+            console.log(response);
+            const { lat, lng } = response.results[0].geometry.location;
+            setLat(lat);
+            setLng(lng);
+          },
+          (error) => {
+            console.error(error);
+          }
+        );
       } else {
         console.log("データが取得できませんでした。");
       }
@@ -64,23 +65,8 @@ const Detail: NextPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const createOffsetGeocoder = () => {
-    return setGeocoder(new window.google.maps.Geocoder());
-  };
-
-  /*   if (geocoder !== undefined && posts?.address !== null) {
-    //const geocoder = new window.google.maps.Geocoder();
-    geocoder.geocode({ address: posts?.address }, (results, status) => {
-      console.log("aaaa");
-      if (status === "OK") {
-        setLat(results[0].geometry.location.lat()), setLng(results[0].geometry.location.lng());
-      }
-    });
-  } */
-
   console.log(lat);
   console.log(lng);
-  console.log(window.google);
 
   return (
     <Flex flexDirection="column" align="center" w="full">
@@ -121,18 +107,9 @@ const Detail: NextPage = () => {
             </PrimaryButton>
           </NextLink>
         </Stack>
-        {window.google === undefined ? (
-          <>
-            <LoadScript
-              googleMapsApiKey="AIzaSyC-7ksgiOxvDnluE1jR27Ynu9NZIAbIdw0"
-              onLoad={() => createOffsetGeocoder()}
-            ></LoadScript>
-          </>
-        ) : (
-          <></>
-        )}
         <p>緯度：{lat}</p>
         <p>緯度：{lng}</p>
+        <p>{posts?.address}</p>
       </Stack>
     </Flex>
   );
