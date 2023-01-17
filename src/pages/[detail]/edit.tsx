@@ -1,6 +1,13 @@
 import {
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogOverlay,
   Badge,
   Box,
+  Button,
   Divider,
   Flex,
   FormControl,
@@ -13,36 +20,73 @@ import {
   RadioGroup,
   Stack,
   Textarea,
+  useDisclosure,
   VStack,
 } from "@chakra-ui/react";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { deleteDoc, doc, getDoc, serverTimestamp, updateDoc } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { validateImage } from "image-validator";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { db, storage } from "../../firebase";
-import PrimaryButton from "../components/elements/Button/PrimaryButton";
-import { useAuthContext } from "../context/AuthContext";
-import { useMessage } from "../hooks/useMessage";
-import { Inputs } from "../types/inputs";
+import { db, storage } from "../../../firebase";
+import PrimaryButton from "../../components/elements/Button/PrimaryButton";
+import { useAuthContext } from "../../context/AuthContext";
+import { useMessage } from "../../hooks/useMessage";
+import { Data } from "../../types/data";
+import { Inputs } from "../../types/inputs";
 
-const Post: NextPage = () => {
+const Edit: NextPage = () => {
+  const router = useRouter();
+  const { detail }: any = router.query;
   const { showMessage } = useMessage();
   const { currentUser } = useAuthContext();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const cancelRef = useRef();
+
+  const [posts, setPosts] = useState<Data | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [base, setBase] = useState<string>(posts?.base);
+  const [file, setFile] = useState<File>(null!);
 
   //バリデーション（react-hook-form）
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
-  } = useForm<Inputs>();
+  } = useForm<Inputs>({ shouldUnregister: false });
 
-  const [loading, setLoading] = useState<boolean>(false);
-  const [base, setBase] = useState<string>("とんこつ");
-  const [file, setFile] = useState<File>(null!);
-  const router = useRouter();
+  useEffect(() => {
+    const docRef = doc(db, "ramenData", detail);
+    const readPost = async () => {
+      const docSnap = await getDoc(docRef);
+
+      //firestoreから対象のデータを読み込みuseStateにセット
+      if (docSnap.exists()) {
+        setPosts({
+          uid: docSnap.data().uid,
+          storeName: docSnap.data().storeName,
+          ramenName: docSnap.data().ramenName,
+          base: docSnap.data().base,
+          detail: docSnap.data().detail,
+          address: docSnap.data().address,
+          picture: docSnap.data().picture,
+          contributor: docSnap.data().contributor,
+        });
+        setBase(docSnap.data().base);
+        setValue("storeName", docSnap.data().storeName);
+        setValue("ramenName", docSnap.data().ramenName);
+        setValue("review", docSnap.data().detail);
+        setValue("picture", docSnap.data().picture);
+        setValue("address", docSnap.data().address);
+      }
+    };
+    readPost();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // ファイルのバリデーション関数
   const validateFile = async (file: File) => {
@@ -94,49 +138,54 @@ const Post: NextPage = () => {
       }
 
       //firestore storageより画像データ取得(画像未選択時はロゴ表示)
-      const ramenLogo: string = "gs://portfolio-app-9fa16.appspot.com/images/ramenLogo.png";
+      const washingtonRef = doc(db, "ramenData", detail);
       const gsReference = ref(
         storage,
         file != null
           ? `gs://portfolio-app-9fa16.appspot.com/images/${file.name}_${file.lastModified}`
-          : ramenLogo
+          : posts?.picture
       );
 
-      //firestoreにデータを追加
+      //firestore更新処理
       await getDownloadURL(gsReference)
         .then((url) => {
-          addDoc(collection(db, "ramenData"), {
-            uid: currentUser.uid,
+          updateDoc(washingtonRef, {
             storeName: data.storeName,
             ramenName: data.ramenName,
             base: base,
             detail: data.review,
             address: data.address,
             picture: url,
-            createTime: serverTimestamp(),
+            updateTime: serverTimestamp(),
             contributor: currentUser.displayName,
           });
         })
         .catch((err) => console.log(err));
 
       await router.push("/");
-      showMessage({ title: "投稿が完了しました。", status: "success" });
+      showMessage({ title: "更新が完了しました。", status: "success" });
     } catch (err) {
-      showMessage({ title: "投稿できませんでした。", status: "error" });
+      showMessage({ title: "更新できませんでした。", status: "error" });
     }
     setLoading(false);
   };
 
-  //ホーム画面へ遷移
-  const onClickHome = () => {
-    router.push("/");
+  //詳細画面へ戻る
+  const onClickDetail = () => {
+    router.push(`/${detail}/detail`);
+  };
+
+  //データを削除後、ホーム画面へ移動
+  const onClickDelete = async () => {
+    await deleteDoc(doc(db, "ramenData", detail));
+    await router.push("/");
   };
 
   return (
     <Flex align="center" justify="center">
       <Box my={4} bg="white" w={{ base: "90%", md: "80%" }} p={4} borderRadius="md" shadow="md">
         <Heading as="h1" size="lg" textAlign="center">
-          おすすめラーメン投稿
+          投稿内容更新
         </Heading>
         <Divider my={4} />
         <Stack spacing={6} py={4} px={10}>
@@ -152,9 +201,9 @@ const Post: NextPage = () => {
                 </FormLabel>
               </HStack>
               <Input
+                id="storeName"
                 type="text"
                 w="90%"
-                id="storeName"
                 {...register("storeName", {
                   required: "店名を入力してください",
                 })}
@@ -174,9 +223,9 @@ const Post: NextPage = () => {
                 </FormLabel>
               </HStack>
               <Input
+                id="ramenName"
                 type="text"
                 w="90%"
-                id="ramenName"
                 {...register("ramenName", {
                   required: "商品名を入力してください",
                 })}
@@ -212,10 +261,10 @@ const Post: NextPage = () => {
                 </FormLabel>
               </HStack>
               <Textarea
+                id="review"
                 placeholder="ラーメンの感想を書いてください。（450文字以内）"
                 rows={5}
                 w="90%"
-                id="review"
                 {...register("review", {
                   required: "レビューを入力してください",
                   maxLength: {
@@ -240,7 +289,6 @@ const Post: NextPage = () => {
               </HStack>
               <input
                 id="picture"
-                className="upload-label"
                 type="file"
                 {...register("picture")}
                 onChange={handleImageSelect}
@@ -273,18 +321,54 @@ const Post: NextPage = () => {
               <FormErrorMessage>{errors.address?.message}</FormErrorMessage>
             </FormControl>
 
-            {/* 登録ボタン */}
+            {/* 更新ボタン */}
             <VStack>
-              <PrimaryButton loading={loading} bg="orange.300" color="white" type="submit" w="40%">
-                投稿する
+              <PrimaryButton loading={loading} bg="blue.300" color="white" type="submit" w="40%">
+                更新
               </PrimaryButton>
+
+              {/* データ削除ボタン */}
+              <PrimaryButton
+                loading={loading}
+                bg="red.400"
+                color="white"
+                type="button"
+                w="40%"
+                onClick={onOpen}
+              >
+                削除
+              </PrimaryButton>
+
+              {/* 削除確認ダイアログ */}
+              <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
+                <AlertDialogOverlay>
+                  <AlertDialogContent>
+                    <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                      データ削除確認
+                    </AlertDialogHeader>
+
+                    <AlertDialogBody>本当にデータを削除しますか？</AlertDialogBody>
+
+                    <AlertDialogFooter>
+                      <Button ref={cancelRef} onClick={onClose}>
+                        キャンセル
+                      </Button>
+                      <Button colorScheme="red" onClick={onClickDelete} ml={3}>
+                        削除
+                      </Button>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialogOverlay>
+              </AlertDialog>
+
+              {/* 戻るボタン */}
               <PrimaryButton
                 loading={loading}
                 bg="gray.400"
                 color="white"
                 type="button"
                 w="40%"
-                onClick={onClickHome}
+                onClick={onClickDetail}
               >
                 戻る
               </PrimaryButton>
@@ -296,4 +380,4 @@ const Post: NextPage = () => {
   );
 };
 
-export default Post;
+export default Edit;
