@@ -3,7 +3,7 @@ import { ReactNode } from "react";
 
 type Props = {
   children: ReactNode;
-  loading: boolean;
+  loading?: boolean;
   bg: string;
   color: string;
   w?: string;

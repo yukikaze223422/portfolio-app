@@ -42,9 +42,9 @@ type authProps = { children: JSX.Element };
 const AuthUser = ({ children }: authProps) => {
   const { currentUser } = useAuthContext();
   const router = useRouter();
+
   useEffect(() => {
-    if (currentUser !== null) {
-      console.log(router.asPath);
+    if (currentUser !== null && currentUser !== undefined) {
       if (decodeURI(router.asPath) == "/login/" || "/signup/") {
         router.push("/");
       } else {

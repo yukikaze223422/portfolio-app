@@ -3,16 +3,20 @@ import { signOut } from "firebase/auth";
 import NextLink from "next/link";
 import { NextRouter, useRouter } from "next/router";
 import { auth } from "../../../firebase";
+import { useAuthContext } from "../../context/AuthContext";
 import { useMessage } from "../../hooks/useMessage";
+import HeaderLink from "../elements/Link/HeaderLink ";
 
 const HeaderMenu = () => {
   const { showMessage } = useMessage();
+  const { currentUser } = useAuthContext();
   const router: NextRouter = useRouter();
 
   const onClickLogout = () => {
     signOut(auth);
-    router.push("/login");
-    console.log("aaaa");
+    if (currentUser === null) {
+      router.push("/login");
+    }
     showMessage({ title: "ログアウトしました。", status: "success" });
   };
 
@@ -22,16 +26,8 @@ const HeaderMenu = () => {
         <Image src="/logo.png" alt="logo" width="165px" height="55px" />
       </Link>
       <Flex justify="flex-end" fontSize="md" display={{ base: "none", md: "flex" }}>
-        <Link
-          as={NextLink}
-          href="/post"
-          pr={5}
-          fontWeight="bold"
-          color="gray.500"
-          _hover={{ opacity: 0.8, color: "orange.300", textDecoration: "none" }}
-        >
-          投稿する
-        </Link>
+        <HeaderLink href="/">ホーム</HeaderLink>
+        <HeaderLink href="/post">投稿する</HeaderLink>
         <Link
           onClick={onClickLogout}
           fontWeight="bold"

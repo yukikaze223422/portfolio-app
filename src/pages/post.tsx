@@ -45,7 +45,7 @@ const Post: NextPage = () => {
     formState: { errors },
   } = useForm<Inputs>();
 
-  const [loading, setIsLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [base, setBase] = useState<string>("とんこつ");
   const [file, setFile] = useState<File>(null!);
   const router = useRouter();
@@ -85,11 +85,11 @@ const Post: NextPage = () => {
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     try {
-      setIsLoading(true);
+      setLoading(true);
 
       // 画像アップロード
       if (file != null) {
-        const storageRef = await ref(storage, `images/${file.name}_${file.lastModified}`);
+        const storageRef = ref(storage, `images/${file.name}_${file.lastModified}`);
         await uploadBytes(storageRef, file)
           .then((snapshot) => {
             console.log(`アップロードに成功しました: ${snapshot}`);
@@ -101,7 +101,7 @@ const Post: NextPage = () => {
 
       //firestore storageより画像データ取得(画像未選択時はロゴ表示)
       const ramenLogo: string = "gs://portfolio-app-9fa16.appspot.com/images/ramenLogo.png";
-      const gsReference = await ref(
+      const gsReference = ref(
         storage,
         file != null
           ? `gs://portfolio-app-9fa16.appspot.com/images/${file.name}_${file.lastModified}`
@@ -129,7 +129,11 @@ const Post: NextPage = () => {
     } catch (err) {
       showMessage({ title: "投稿できませんでした。", status: "error" });
     }
-    setIsLoading(false);
+    setLoading(false);
+  };
+
+  const onClickHome = () => {
+    router.push("/");
   };
 
   return (
@@ -277,6 +281,16 @@ const Post: NextPage = () => {
             <VStack>
               <PrimaryButton loading={loading} bg="orange.300" color="white" type="submit" w="40%">
                 投稿する
+              </PrimaryButton>
+              <PrimaryButton
+                loading={loading}
+                bg="gray.400"
+                color="white"
+                type="button"
+                w="40%"
+                onClick={onClickHome}
+              >
+                戻る
               </PrimaryButton>
             </VStack>
           </form>

@@ -2,10 +2,12 @@ import { Button } from "@chakra-ui/react";
 import { signOut } from "firebase/auth";
 import { NextRouter, useRouter } from "next/router";
 import { auth } from "../../../firebase";
+import { useAuthContext } from "../../context/AuthContext";
 import { useMessage } from "../../hooks/useMessage";
 
 const HeaderMenuDrawer = () => {
   const { showMessage } = useMessage();
+  const { currentUser } = useAuthContext();
   const router: NextRouter = useRouter();
 
   const onClickHome = () => {
@@ -18,7 +20,10 @@ const HeaderMenuDrawer = () => {
 
   const onClickLogout = async () => {
     signOut(auth);
-    router.push("/login");
+    if (currentUser === null) {
+      router.push("/login");
+    }
+
     showMessage({ title: "ログアウトしました。", status: "success" });
   };
 

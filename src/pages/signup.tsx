@@ -44,13 +44,13 @@ const SignUp: NextPage = () => {
     formState: { errors },
   } = useForm<Inputs>();
 
-  const [loading, setIsLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [isRevealPassword, setIsRevealPassword] = useState<boolean>(false);
   const router = useRouter();
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     try {
-      setIsLoading(true);
+      setLoading(true);
       const newUser = await createUserWithEmailAndPassword(auth, data.email, data.password);
       const uid = newUser.user.uid;
       if (newUser) {
@@ -67,7 +67,7 @@ const SignUp: NextPage = () => {
       }
       router.push("/");
       showMessage({ title: "登録が完了しました。", status: "success" });
-      setIsLoading(false);
+      setLoading(false);
     } catch (err) {
       showMessage({ title: "登録できませんでした。", status: "error" });
     }
