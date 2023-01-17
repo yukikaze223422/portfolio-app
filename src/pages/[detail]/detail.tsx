@@ -1,5 +1,5 @@
-import { Box, Flex, Image, Stack, Text } from "@chakra-ui/react";
-import { GoogleMap, LoadScript, MarkerF } from "@react-google-maps/api";
+import { Badge, Box, Flex, Image, Stack, Text } from "@chakra-ui/react";
+import { GoogleMap, InfoWindowF, MarkerF } from "@react-google-maps/api";
 import { doc, getDoc } from "firebase/firestore";
 import { NextPage } from "next";
 import NextLink from "next/link";
@@ -31,7 +31,7 @@ const Detail: NextPage = () => {
   const [lng, setLng] = useState<number | null>(null);
 
   const containerStyle = {
-    width: "400px",
+    width: "auto",
     height: "400px",
   };
 
@@ -40,9 +40,14 @@ const Detail: NextPage = () => {
     lng: lng,
   };
 
-  const positionAkiba = {
+  const position = {
     lat: lat,
     lng: lng,
+  };
+
+  const divStyle = {
+    background: "white",
+    fontSize: 7.5,
   };
 
   useEffect(() => {
@@ -89,31 +94,53 @@ const Detail: NextPage = () => {
   return (
     <Flex flexDirection="column" align="center" w="full">
       <Stack textAlign="center" w={{ base: "100%", md: "80%" }} p={4} spacing="4">
-        {/* アプリ名 */}
-        <Text my={4} fontSize={{ base: "2xl", sm: "4xl" }} fontWeight="bold" color="orange.400">
+        {/* 店舗名 */}
+        <Text my={4} fontSize={{ base: "3xl", sm: "4xl" }} fontWeight="bold" color="orange.400">
           {posts?.storeName}
         </Text>
-        {/* アプリ画像 */}
+        {/* ラーメン画像 */}
         <Image
-          borderRadius="lg"
           src={posts?.picture}
           alt={posts?.ramenName}
           objectFit="contain"
+          borderRadius="3%"
           maxH="lg"
         />
-        {/* アプリの説明欄 */}
-        <Box rounded="lg" bg="white" boxShadow="lg" py={10} px={{ base: 4, md: 10 }}>
+        {/* ラーメン名 */}
+        <Text fontSize={{ base: "xl", sm: "3xl" }} fontWeight="bold" color="orange.400">
+          {posts?.ramenName}
+          <Badge variant="solid" colorScheme="green" ml={2} fontSize="sm">
+            {posts?.base}
+          </Badge>
+        </Text>
+        {/* ラーメンのレビュー */}
+        <Box rounded="lg" bg="white" boxShadow="lg" py={7} px={{ base: 4, md: 10 }}>
+          <Text fontSize={{ base: "2xl", sm: "3xl" }} fontWeight="bold" color="orange.400">
+            レビュー
+          </Text>
           <Text fontSize={{ base: "sm", sm: "md" }} align="left">
             {posts?.detail}
           </Text>
         </Box>
         {lng !== null && lat !== null ? (
-          <LoadScript googleMapsApiKey="AIzaSyC-7ksgiOxvDnluE1jR27Ynu9NZIAbIdw0">
+          <Box rounded="lg" bg="white" boxShadow="lg" py={10} px={{ base: 4, md: 10 }}>
+            <Text fontSize={{ base: "2xl", sm: "3xl" }} fontWeight="bold" color="orange.400">
+              所在地
+            </Text>
+            <Text fontSize={{ base: "xl", sm: "2xl" }}>{posts?.address}</Text>
             <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={17}>
-              <MarkerF position={positionAkiba} />
+              <MarkerF position={position} />
+              <InfoWindowF position={position}>
+                <Box style={divStyle}>
+                  <Text fontWeight="bold">{posts?.storeName}</Text>
+                </Box>
+              </InfoWindowF>
             </GoogleMap>
-          </LoadScript>
+          </Box>
         ) : null}
+        <Text textAlign="left" fontSize="15px">
+          投稿者：{posts?.contributor}　
+        </Text>
         {/* 戻る/編集ボタン部分 */}
         <Stack>
           {/* 編集ボタン：ログインしているユーザーと、投稿者idが一致した場合のみ表示*/}
@@ -132,9 +159,6 @@ const Detail: NextPage = () => {
             </PrimaryButton>
           </NextLink>
         </Stack>
-        <p>緯度：{lat}</p>
-        <p>緯度：{lng}</p>
-        <p>{posts?.address}</p>
       </Stack>
     </Flex>
   );
