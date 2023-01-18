@@ -1,27 +1,13 @@
 import { Container, Flex, Text, useDisclosure } from "@chakra-ui/react";
-import { Timestamp } from "firebase/firestore";
-import { NextRouter, useRouter } from "next/router";
 import { useAuthContext } from "../../../context/AuthContext";
 import { MenuIconButton } from "../../elements/Button/MenuIconButton";
 import HeaderLoginMenu from "../../molecules/HeaderLoginMenu";
 import HeaderMenu from "../../molecules/HeaderMenu";
 import MenuDrawer from "../../molecules/MenuDrawer";
 
-type User = {
-  name: string;
-  email: string;
-  uid: string;
-  createTime: Timestamp;
-  updateTime: Timestamp;
-  username: string;
-  userImg: string;
-  text: string;
-};
-
 const Header = () => {
   const { currentUser } = useAuthContext();
   const { isOpen, onOpen, onClose, onToggle } = useDisclosure();
-  const router: NextRouter = useRouter();
 
   return (
     <>
