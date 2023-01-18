@@ -1,26 +1,14 @@
-import { Badge, Box, Flex, Image, Stack, Text } from "@chakra-ui/react";
+import { Badge, Box, Center, Flex, Image, Stack, Text } from "@chakra-ui/react";
 import { GoogleMap, InfoWindowF, MarkerF } from "@react-google-maps/api";
 import { doc, getDoc } from "firebase/firestore";
 import { NextPage } from "next";
-import NextLink from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Geocode from "react-geocode";
 import { db } from "../../../firebase";
 import PrimaryButton from "../../components/elements/Button/PrimaryButton";
 import { useAuthContext } from "../../context/AuthContext";
-
-type Data = {
-  uid: string;
-  storeName: string;
-  ramenName: string;
-  base: string;
-  detail: string;
-  address?: string;
-  picture?: string;
-  createTime?: any;
-  contributor: string;
-};
+import { Data } from "../../types/data";
 
 const Detail: NextPage = () => {
   const router = useRouter();
@@ -67,7 +55,7 @@ const Detail: NextPage = () => {
           contributor: docSnap.data().contributor,
         });
         if (docSnap.data().address !== "") {
-          Geocode.setApiKey("AIzaSyC-7ksgiOxvDnluE1jR27Ynu9NZIAbIdw0");
+          Geocode.setApiKey(process.env.NEXT_PUBLIC_GOOGLEMAP_API_KEY);
           await Geocode.fromAddress(docSnap.data().address).then(
             (response) => {
               console.log(response);
@@ -90,6 +78,7 @@ const Detail: NextPage = () => {
 
   console.log(lat);
   console.log(lng);
+  console.log(detail.id);
 
   return (
     <Flex flexDirection="column" align="center" w="full">
@@ -98,6 +87,7 @@ const Detail: NextPage = () => {
         <Text my={4} fontSize={{ base: "3xl", sm: "4xl" }} fontWeight="bold" color="orange.400">
           {posts?.storeName}
         </Text>
+
         {/* ラーメン画像 */}
         <Image
           src={posts?.picture}
@@ -106,6 +96,7 @@ const Detail: NextPage = () => {
           borderRadius="3%"
           maxH="lg"
         />
+
         {/* ラーメン名 */}
         <Text fontSize={{ base: "xl", sm: "3xl" }} fontWeight="bold" color="orange.400">
           {posts?.ramenName}
@@ -113,6 +104,7 @@ const Detail: NextPage = () => {
             {posts?.base}
           </Badge>
         </Text>
+
         {/* ラーメンのレビュー */}
         <Box rounded="lg" bg="white" boxShadow="lg" py={7} px={{ base: 4, md: 10 }}>
           <Text fontSize={{ base: "2xl", sm: "3xl" }} fontWeight="bold" color="orange.400">
@@ -122,6 +114,8 @@ const Detail: NextPage = () => {
             {posts?.detail}
           </Text>
         </Box>
+
+        {/* 店舗住所 */}
         {lng !== null && lat !== null ? (
           <Box rounded="lg" bg="white" boxShadow="lg" py={10} px={{ base: 4, md: 10 }}>
             <Text fontSize={{ base: "2xl", sm: "3xl" }} fontWeight="bold" color="orange.400">
@@ -138,26 +132,44 @@ const Detail: NextPage = () => {
             </GoogleMap>
           </Box>
         ) : null}
+
+        {/* アカウント */}
         <Text textAlign="left" fontSize="15px">
           投稿者：{posts?.contributor}　
         </Text>
-        {/* 戻る/編集ボタン部分 */}
+
         <Stack>
           {/* 編集ボタン：ログインしているユーザーと、投稿者idが一致した場合のみ表示*/}
-          {currentUser?.uid === posts?.uid && (
-            <NextLink href={`/posts/${detail}/edit`} passHref>
-              <PrimaryButton bg="pink.400" color="white" type="button" w="40%">
+          <Center>
+            {currentUser?.uid === posts?.uid && (
+              <PrimaryButton
+                bg="pink.400"
+                color="white"
+                type="button"
+                w="40%"
+                onClick={() => {
+                  router.push(`/${detail}/edit`);
+                }}
+              >
                 編集
               </PrimaryButton>
-            </NextLink>
-          )}
+            )}
+          </Center>
 
           {/* 戻るボタン */}
-          <NextLink href="/" passHref>
-            <PrimaryButton bg="gray.400" color="white" type="button" w="40%">
+          <Center>
+            <PrimaryButton
+              bg="gray.400"
+              color="white"
+              type="button"
+              w="40%"
+              onClick={() => {
+                router.push("/");
+              }}
+            >
               戻る
             </PrimaryButton>
-          </NextLink>
+          </Center>
         </Stack>
       </Stack>
     </Flex>

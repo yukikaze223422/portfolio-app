@@ -15,7 +15,12 @@ import {
   Link,
   Stack,
 } from "@chakra-ui/react";
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup,
+  updateProfile,
+} from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import type { NextPage } from "next";
 import NextLink from "next/link";
@@ -23,13 +28,15 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { AiOutlineMail } from "react-icons/ai";
+import { FcGoogle } from "react-icons/fc";
 import { FiUser } from "react-icons/fi";
 import { RiLockPasswordLine } from "react-icons/ri";
 import { auth, db } from "../../firebase";
 import PrimaryButton from "../components/elements/Button/PrimaryButton";
+import { useAuthContext } from "../context/AuthContext";
 import { useMessage } from "../hooks/useMessage";
 
-type Inputs = {
+type LoginUser = {
   username: string;
   email: string;
   password: string;
@@ -38,17 +45,20 @@ type Inputs = {
 //サインアップページ
 const SignUp: NextPage = () => {
   const { showMessage } = useMessage();
+  const { currentUser } = useAuthContext();
+
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<Inputs>();
+  } = useForm<LoginUser>();
 
   const [loading, setLoading] = useState<boolean>(false);
   const [isRevealPassword, setIsRevealPassword] = useState<boolean>(false);
   const router = useRouter();
 
-  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+  //ログインユーザー登録処理
+  const onSubmit: SubmitHandler<LoginUser> = async (data) => {
     try {
       setLoading(true);
       const newUser = await createUserWithEmailAndPassword(auth, data.email, data.password);
@@ -65,12 +75,34 @@ const SignUp: NextPage = () => {
           displayName: data.username,
         });
       }
-      router.push("/");
-      showMessage({ title: "登録が完了しました。", status: "success" });
+      if (currentUser !== null) {
+        router.push("/");
+        showMessage({ title: "登録が完了しました。", status: "success" });
+      }
       setLoading(false);
     } catch (err) {
       showMessage({ title: "登録できませんでした。", status: "error" });
     }
+  };
+
+  //Googleログイン処理
+  const googleRegister = async (): Promise<void> => {
+    try {
+      setLoading(true);
+      const provider = new GoogleAuthProvider();
+      await signInWithPopup(auth, provider);
+      const user = auth.currentUser.displayName;
+      await updateProfile(auth.currentUser, {
+        displayName: user,
+      });
+      if (currentUser !== null) {
+        router.push("/");
+        showMessage({ title: "登録しました。", status: "success" });
+      }
+    } catch {
+      showMessage({ title: "登録できませんでした。", status: "error" });
+    }
+    setLoading(false);
   };
 
   return (
@@ -183,6 +215,17 @@ const SignUp: NextPage = () => {
               </PrimaryButton>
             </Stack>
           </form>
+
+          {/* Google登録ボタン */}
+          <PrimaryButton
+            loading={loading}
+            bg="green.300"
+            color="white"
+            leftIcon={<FcGoogle />}
+            onClick={googleRegister}
+          >
+            Google登録
+          </PrimaryButton>
 
           {/* ログイン画面遷移ボタン */}
           <Box textAlign="center">

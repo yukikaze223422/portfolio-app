@@ -10,7 +10,7 @@ import { AuthProvider, AuthUser } from "../context/AuthContext";
 function MyApp({ Component, pageProps }: AppProps): JSX.Element {
   return (
     <ChakraProvider>
-      <LoadScript googleMapsApiKey="AIzaSyC-7ksgiOxvDnluE1jR27Ynu9NZIAbIdw0">
+      <LoadScript googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLEMAP_API_KEY}>
         <AuthProvider>
           <AuthUser>
             <Layout>

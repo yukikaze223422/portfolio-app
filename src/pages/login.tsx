@@ -24,11 +24,13 @@ import React, { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { auth } from "../../firebase";
 import PrimaryButton from "../components/elements/Button/PrimaryButton";
+import { useAuthContext } from "../context/AuthContext";
 import { useMessage } from "../hooks/useMessage";
 
 //ログインページ
 const Login: NextPage = () => {
   const { showMessage } = useMessage();
+  const { currentUser } = useAuthContext();
 
   const [loading, setLoading] = useState<boolean>(false);
   const [isRevealPassword, setIsRevealPassword] = useState<boolean>(false);
@@ -41,8 +43,10 @@ const Login: NextPage = () => {
     try {
       setLoading(true);
       await signInWithEmailAndPassword(auth, email, password);
-      router.push("/");
-      showMessage({ title: "ログインしました。", status: "success" });
+      if (currentUser !== null) {
+        router.push("/");
+        showMessage({ title: "ログインしました。", status: "success" });
+      }
     } catch (err) {
       showMessage({ title: "ログインできませんでした。", status: "error" });
     }
@@ -59,8 +63,10 @@ const Login: NextPage = () => {
       await updateProfile(auth.currentUser, {
         displayName: user,
       });
-      router.push("/");
-      showMessage({ title: "ログインしました。", status: "success" });
+      if (currentUser !== null) {
+        router.push("/");
+        showMessage({ title: "ログインしました。", status: "success" });
+      }
     } catch {
       showMessage({ title: "ログインできませんでした。", status: "error" });
     }
@@ -77,8 +83,10 @@ const Login: NextPage = () => {
       await updateProfile(auth.currentUser, {
         displayName: "Guest",
       });
-      router.push("/");
-      showMessage({ title: "ログインしました。", status: "success" });
+      if (currentUser !== null) {
+        router.push("/");
+        showMessage({ title: "ログインしました。", status: "success" });
+      }
     } catch (err) {
       showMessage({ title: "ログインできませんでした。", status: "error" });
     }
