@@ -45,7 +45,7 @@ const AuthUser = ({ children }: authProps) => {
 
   useEffect(() => {
     if (currentUser !== null && currentUser !== undefined) {
-      if (decodeURI(router.asPath) == "/login/" || "/signup/") {
+      if (decodeURI(router.asPath) == ("/login/" || "/signup/")) {
         router.push("/");
       } else {
         return;

@@ -80,7 +80,7 @@ const Detail: NextPage = () => {
 
   return (
     <TitleLayout title={"詳細｜RamenSharing"}>
-      <Flex flexDirection="column" align="center" w="full">
+      <Flex flexDirection="column" align="center">
         <Stack textAlign="center" w={{ base: "100%", md: "80%" }} p={4} spacing="4">
           {/* 店舗名 */}
           <Text my={4} fontSize={{ base: "3xl", sm: "4xl" }} fontWeight="bold" color="orange.400">
@@ -177,37 +177,35 @@ const Detail: NextPage = () => {
             </Flex>
           )}
 
-          <Stack>
-            {/* 編集ボタン：ログインしているユーザーと、投稿者idが一致した場合のみ表示*/}
-            <Center>
-              {currentUser?.uid === posts?.uid && (
-                <PrimaryButton
-                  bg="pink.400"
-                  color="white"
-                  type="button"
-                  w="40%"
-                  onClick={() => {
-                    router.push(`/${detail}/edit`);
-                  }}
-                >
-                  編集
-                </PrimaryButton>
-              )}
-            </Center>
-
-            {/* 戻るボタン */}
-            <Center>
+          {/* 編集ボタン：ログインしているユーザーと、投稿者idが一致した場合のみ表示*/}
+          <Center>
+            {currentUser?.uid === posts?.uid && (
               <PrimaryButton
-                bg="gray.400"
+                bg="pink.400"
                 color="white"
                 type="button"
                 w="40%"
-                onClick={() => router.back()}
+                onClick={() => {
+                  router.push(`/${detail}/edit`);
+                }}
               >
-                戻る
+                編集
               </PrimaryButton>
-            </Center>
-          </Stack>
+            )}
+          </Center>
+
+          {/* 戻るボタン */}
+          <Center>
+            <PrimaryButton
+              bg="gray.400"
+              color="white"
+              type="button"
+              w="40%"
+              onClick={() => router.back()}
+            >
+              戻る
+            </PrimaryButton>
+          </Center>
         </Stack>
       </Flex>
     </TitleLayout>
