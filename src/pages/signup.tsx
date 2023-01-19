@@ -76,7 +76,7 @@ const SignUp: NextPage = () => {
         });
       }
       if (currentUser !== null) {
-        router.push("/");
+        router.push("/mypage");
         showMessage({ title: "登録が完了しました。", status: "success" });
       }
       setLoading(false);
@@ -96,7 +96,7 @@ const SignUp: NextPage = () => {
         displayName: user,
       });
       if (currentUser !== null) {
-        router.push("/");
+        router.push("/mypage");
         showMessage({ title: "登録しました。", status: "success" });
       }
     } catch {

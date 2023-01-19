@@ -323,7 +323,7 @@ const Edit: NextPage = () => {
 
             {/* 更新ボタン */}
             <VStack>
-              <PrimaryButton loading={loading} bg="blue.300" color="white" type="submit" w="40%">
+              <PrimaryButton loading={loading} bg="blue.400" color="white" type="submit" w="40%">
                 更新
               </PrimaryButton>
 

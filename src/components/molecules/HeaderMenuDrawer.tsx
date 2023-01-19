@@ -18,6 +18,10 @@ const HeaderMenuDrawer = () => {
     router.push("/post");
   };
 
+  const onClickMyPage = () => {
+    router.push("/mypage");
+  };
+
   const onClickLogout = async () => {
     signOut(auth);
     if (currentUser === null) {
@@ -34,6 +38,9 @@ const HeaderMenuDrawer = () => {
       </Button>
       <Button w="80%" bg="white" borderBottom="1px" borderColor="gray.200" onClick={onClickPost}>
         投稿する
+      </Button>
+      <Button w="80%" bg="white" borderBottom="1px" borderColor="gray.200" onClick={onClickMyPage}>
+        マイページ
       </Button>
       <Button w="80%" bg="white" borderBottom="1px" borderColor="gray.200" onClick={onClickLogout}>
         ログアウト

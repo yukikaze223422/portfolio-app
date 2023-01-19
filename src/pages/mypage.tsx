@@ -1,12 +1,13 @@
 import {
   Box,
-  Button,
+  Center,
   Flex,
   FormControl,
   FormLabel,
   Heading,
   Image,
   Input,
+  Stack,
   Text,
   VStack,
 } from "@chakra-ui/react";
@@ -15,17 +16,19 @@ import { collection, doc, getDocs, query, updateDoc, where } from "firebase/fire
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { validateImage } from "image-validator";
 import type { NextPage } from "next";
-import NextLink from "next/link";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { db, storage } from "../../firebase";
+import PrimaryButton from "../components/elements/Button/PrimaryButton";
 import { useAuthContext } from "../context/AuthContext";
+import { useMessage } from "../hooks/useMessage";
 
 /**
     ユーザープロフィールページ
  */
 const MyPage: NextPage = () => {
   const { currentUser } = useAuthContext();
+  const { showMessage } = useMessage();
 
   const [username, setUsername] = useState("");
   const [file, setFile] = useState<File>(null!);
@@ -33,6 +36,11 @@ const MyPage: NextPage = () => {
   const [loading, setLoading] = useState<boolean>(false);
 
   const router = useRouter();
+  useEffect(() => {
+    setUsername(currentUser?.displayName);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // アップロードされたファイルのバリデーション関数
   const validateFile = async (file: File) => {
@@ -114,60 +122,75 @@ const MyPage: NextPage = () => {
       await updateDoc(washingtonRef, {
         photoURL: currentUser.photoURL,
         contributor: currentUser.displayName,
-      });
-      console.log(data.data().photoURL);
-      console.log(data.data().contributor);
+      })
+        .then(() => {
+          console.log(data.id);
+        })
+        .catch((error) => {
+          console.log(error);
+          router.reload();
+          showMessage({
+            title: "更新が完了できませんでした",
+            status: "error",
+          });
+          return;
+        });
+    });
+    router.push("/");
+    showMessage({
+      title: "更新が完了しました",
+      status: "success",
     });
 
     setLoading(false);
   };
 
   return (
-    <Flex flexDirection={"column"} align={"center"} w={"full"} p={{ base: 2, sm: 4, md: 8 }}>
-      <Heading fontSize={"4xl"} mb={8}>
+    <Flex flexDirection="column" align="center" w="full" p={{ base: 2, sm: 4, md: 8 }}>
+      <Heading fontSize="4xl" mb={8}>
         マイページ
       </Heading>
 
       <Box
-        rounded={"lg"}
-        bg={"white"}
-        boxShadow={"lg"}
+        rounded="lg"
+        bg="white"
+        boxShadow="lg"
         py={10}
         px={{ base: 4, sm: 4, md: 14 }}
         w={{ base: "100%", sm: "80%", md: "55%" }}
-        maxW={"lg"}
+        maxW="lg"
       >
         {/* プロフィールアイコン */}
         <VStack mb={8}>
           <Image
-            src={currentUser.photoURL ? currentUser.photoURL : "/user.png"}
+            src={currentUser?.photoURL ? currentUser.photoURL : "/user.png"}
             alt={`profile icon of ${username}`}
-            borderRadius={"100%"}
+            borderRadius="100%"
             maxW={40}
             maxH={40}
           />
-          <Text fontSize={"sm"}>
-            {!currentUser.photoURL && "プロフィールアイコンが設定されていません"}
+          <Text fontSize="sm">
+            {!currentUser?.photoURL && "プロフィールアイコンが設定されていません"}
           </Text>
         </VStack>
         <Box mb={8}>
-          <Text fontWeight={"bold"} color={"blue.400"}>
+          <Text fontWeight="bold" color="orange.400">
             メールアドレス
           </Text>
-          <Text mt={2}>{currentUser.email}</Text>
+          <Text mt={2}>{currentUser?.email}</Text>
         </Box>
         {/* プロフィール編集フォーム */}
         <form onSubmit={(e) => handleUpdateButtonClick(e)}>
           {/* ユーザーネーム入力欄 */}
           <FormControl id="username" isRequired mb={8}>
-            <FormLabel fontWeight={"bold"} color={"blue.400"}>
+            <FormLabel fontWeight="bold" color="orange.400">
               ユーザーネーム
             </FormLabel>
             <Input
               id="username"
               type="username"
-              placeholder="Usernameを入力"
-              defaultValue={currentUser.displayName ? currentUser.displayName : ""}
+              placeholder="ユーザー名を入力"
+              value={currentUser?.displayName ? username : ""}
               onChange={(e) => setUsername(e.target.value)}
               autoComplete="off"
             />
@@ -175,41 +198,35 @@ const MyPage: NextPage = () => {
 
           {/* アイコン設定 */}
           <FormControl mb={8}>
-            <FormLabel fontWeight={"bold"} color={"blue.400"}>
-              プロフィールアイコンを変更する
+            <FormLabel fontWeight="bold" color="orange.400">
+              プロフィールアイコン変更
             </FormLabel>
             <input type="file" onChange={handleImageSelect} />
-            <Text fontSize={"sm"} mt={2} color={"red.500"}>
+            <Text fontSize="sm" mt={2} color="red.500">
               {!isUploaded && "画像をアップロードしています..."}
             </Text>
           </FormControl>
+          <Stack>
+            <Center>
+              {/* 更新ボタン */}
+              <PrimaryButton loading={loading} bg="blue.400" color="white" type="submit" w="60%">
+                更新
+              </PrimaryButton>
+            </Center>
 
-          {/* 更新ボタン */}
-          <Button
-            type="submit"
-            bg={"blue.400"}
-            color={"white"}
-            _hover={{
-              bg: "blue.500",
-            }}
-            mr={4}
-          >
-            更新
-          </Button>
-
-          {/* 戻るボタン */}
-          <NextLink href="/" passHref>
-            <Button
-              loadingText="Submitting"
-              bg={"gray.400"}
-              color={"white"}
-              _hover={{
-                bg: "gray.500",
-              }}
-            >
-              TOPへ
-            </Button>
-          </NextLink>
+            <Center>
+              {/* 戻るボタン */}
+              <PrimaryButton
+                loading={loading}
+                bg="gray.400"
+                color="white"
+                w="60%"
+                onClick={() => router.push("/")}
+              >
+                戻る
+              </PrimaryButton>
+            </Center>
+          </Stack>
         </form>
       </Box>
     </Flex>
