@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import Geocode from "react-geocode";
 import { db } from "../../../firebase";
 import PrimaryButton from "../../components/elements/Button/PrimaryButton";
+import TitleLayout from "../../components/layouts/titleLayout";
 import { useAuthContext } from "../../context/AuthContext";
 import { Data } from "../../types/data";
 
@@ -76,103 +77,99 @@ const Detail: NextPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  console.log(lat);
-  console.log(lng);
-  console.log(detail.id);
-
   return (
-    <Flex flexDirection="column" align="center" w="full">
-      <Stack textAlign="center" w={{ base: "100%", md: "80%" }} p={4} spacing="4">
-        {/* 店舗名 */}
-        <Text my={4} fontSize={{ base: "3xl", sm: "4xl" }} fontWeight="bold" color="orange.400">
-          {posts?.storeName}
-        </Text>
-
-        {/* ラーメン画像 */}
-        <Image
-          src={posts?.picture}
-          alt={posts?.ramenName}
-          objectFit="contain"
-          borderRadius="3%"
-          maxH="lg"
-        />
-
-        {/* ラーメン名 */}
-        <Text fontSize={{ base: "xl", sm: "3xl" }} fontWeight="bold" color="orange.400">
-          {posts?.ramenName}
-          <Badge variant="solid" colorScheme="green" ml={2} fontSize="sm">
-            {posts?.base}
-          </Badge>
-        </Text>
-
-        {/* ラーメンのレビュー */}
-        <Box rounded="lg" bg="white" boxShadow="lg" py={7} px={{ base: 4, md: 10 }}>
-          <Text fontSize={{ base: "2xl", sm: "3xl" }} fontWeight="bold" color="orange.400">
-            レビュー
+    <TitleLayout title={"詳細｜RamenSharing"}>
+      <Flex flexDirection="column" align="center" w="full">
+        <Stack textAlign="center" w={{ base: "100%", md: "80%" }} p={4} spacing="4">
+          {/* 店舗名 */}
+          <Text my={4} fontSize={{ base: "3xl", sm: "4xl" }} fontWeight="bold" color="orange.400">
+            {posts?.storeName}
           </Text>
-          <Text fontSize={{ base: "sm", sm: "md" }} align="left">
-            {posts?.detail}
-          </Text>
-        </Box>
 
-        {/* 店舗住所 */}
-        {lng !== null && lat !== null ? (
-          <Box rounded="lg" bg="white" boxShadow="lg" py={10} px={{ base: 4, md: 10 }}>
+          {/* ラーメン画像 */}
+          <Image
+            src={posts?.picture}
+            alt={posts?.ramenName}
+            objectFit="contain"
+            borderRadius="3%"
+            maxH="lg"
+          />
+
+          {/* ラーメン名 */}
+          <Text fontSize={{ base: "xl", sm: "3xl" }} fontWeight="bold" color="orange.400">
+            {posts?.ramenName}
+            <Badge variant="solid" colorScheme="green" ml={2} fontSize="sm">
+              {posts?.base}
+            </Badge>
+          </Text>
+
+          {/* ラーメンのレビュー */}
+          <Box rounded="lg" bg="white" boxShadow="lg" py={7} px={{ base: 4, md: 10 }}>
             <Text fontSize={{ base: "2xl", sm: "3xl" }} fontWeight="bold" color="orange.400">
-              所在地
+              レビュー
             </Text>
-            <Text fontSize={{ base: "xl", sm: "2xl" }}>{posts?.address}</Text>
-            <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={17}>
-              <MarkerF position={position} />
-              <InfoWindowF position={position}>
-                <Box style={divStyle}>
-                  <Text fontWeight="bold">{posts?.storeName}</Text>
-                </Box>
-              </InfoWindowF>
-            </GoogleMap>
+            <Text fontSize={{ base: "sm", sm: "md" }} align="left">
+              {posts?.detail}
+            </Text>
           </Box>
-        ) : null}
 
-        {/* アカウント */}
-        <Text textAlign="left" fontSize="15px">
-          投稿者：{posts?.contributor}　
-        </Text>
+          {/* 店舗住所 */}
+          {lng !== null && lat !== null ? (
+            <Box rounded="lg" bg="white" boxShadow="lg" py={10} px={{ base: 4, md: 10 }}>
+              <Text fontSize={{ base: "2xl", sm: "3xl" }} fontWeight="bold" color="orange.400">
+                所在地
+              </Text>
+              <Text fontSize={{ base: "xl", sm: "2xl" }}>{posts?.address}</Text>
+              <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={17}>
+                <MarkerF position={position} />
+                <InfoWindowF position={position}>
+                  <Box style={divStyle}>
+                    <Text fontWeight="bold">{posts?.storeName}</Text>
+                  </Box>
+                </InfoWindowF>
+              </GoogleMap>
+            </Box>
+          ) : null}
 
-        <Stack>
-          {/* 編集ボタン：ログインしているユーザーと、投稿者idが一致した場合のみ表示*/}
-          <Center>
-            {currentUser?.uid === posts?.uid && (
+          {/* アカウント */}
+          <Text textAlign="left" fontSize="15px">
+            投稿者：{posts?.contributor}　
+          </Text>
+
+          <Stack>
+            {/* 編集ボタン：ログインしているユーザーと、投稿者idが一致した場合のみ表示*/}
+            <Center>
+              {currentUser?.uid === posts?.uid && (
+                <PrimaryButton
+                  bg="pink.400"
+                  color="white"
+                  type="button"
+                  w="40%"
+                  onClick={() => {
+                    router.push(`/${detail}/edit`);
+                  }}
+                >
+                  編集
+                </PrimaryButton>
+              )}
+            </Center>
+
+            {/* 戻るボタン */}
+            <Center>
               <PrimaryButton
-                bg="pink.400"
+                bg="gray.400"
                 color="white"
                 type="button"
                 w="40%"
-                onClick={() => {
-                  router.push(`/${detail}/edit`);
-                }}
+                onClick={() => router.back()}
               >
-                編集
+                戻る
               </PrimaryButton>
-            )}
-          </Center>
-
-          {/* 戻るボタン */}
-          <Center>
-            <PrimaryButton
-              bg="gray.400"
-              color="white"
-              type="button"
-              w="40%"
-              onClick={() => {
-                router.push("/");
-              }}
-            >
-              戻る
-            </PrimaryButton>
-          </Center>
+            </Center>
+          </Stack>
         </Stack>
-      </Stack>
-    </Flex>
+      </Flex>
+    </TitleLayout>
   );
 };
 

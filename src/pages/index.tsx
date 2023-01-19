@@ -5,6 +5,7 @@ import NextLink from "next/link";
 import { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
 import { db } from "../../firebase";
+import TitleLayout from "../components/layouts/titleLayout";
 
 // timestampを、yy/mm/dd/hh/mm形式へ変換
 const getDisplayTime = (e: any) => {
@@ -43,7 +44,7 @@ const Home: NextPage = () => {
   };
 
   return (
-    <>
+    <TitleLayout title={"RamenSharing｜おすすめラーメン共有サイト"}>
       <VStack py={12} gap={4}>
         {ramenData.slice(offset, offset + perPage).map((data) => (
           <Link
@@ -129,7 +130,7 @@ const Home: NextPage = () => {
           disabledClassName={"pagination__disabled"}
         />
       </VStack>
-    </>
+    </TitleLayout>
   );
 };
 

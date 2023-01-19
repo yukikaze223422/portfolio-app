@@ -20,6 +20,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { db, storage } from "../../firebase";
 import PrimaryButton from "../components/elements/Button/PrimaryButton";
+import TitleLayout from "../components/layouts/titleLayout";
 import { useAuthContext } from "../context/AuthContext";
 import { useMessage } from "../hooks/useMessage";
 
@@ -146,90 +147,92 @@ const MyPage: NextPage = () => {
   };
 
   return (
-    <Flex flexDirection="column" align="center" w="full" p={{ base: 2, sm: 4, md: 8 }}>
-      <Heading fontSize="4xl" mb={8}>
-        マイページ
-      </Heading>
+    <TitleLayout title={"マイページ｜RamenSharing"}>
+      <Flex flexDirection="column" align="center" w="full" p={{ base: 2, sm: 4, md: 8 }}>
+        <Heading fontSize="4xl" mb={8}>
+          マイページ
+        </Heading>
 
-      <Box
-        rounded="lg"
-        bg="white"
-        boxShadow="lg"
-        py={10}
-        px={{ base: 4, sm: 4, md: 14 }}
-        w={{ base: "100%", sm: "80%", md: "55%" }}
-        maxW="lg"
-      >
-        {/* プロフィールアイコン */}
-        <VStack mb={8}>
-          <Image
-            src={currentUser?.photoURL ? currentUser.photoURL : "/user.png"}
-            alt={`profile icon of ${username}`}
-            borderRadius="100%"
-            maxW={40}
-            maxH={40}
-          />
-          <Text fontSize="sm">
-            {!currentUser?.photoURL && "プロフィールアイコンが設定されていません"}
-          </Text>
-        </VStack>
-        <Box mb={8}>
-          <Text fontWeight="bold" color="orange.400">
-            メールアドレス
-          </Text>
-          <Text mt={2}>{currentUser?.email}</Text>
-        </Box>
-        {/* プロフィール編集フォーム */}
-        <form onSubmit={(e) => handleUpdateButtonClick(e)}>
-          {/* ユーザーネーム入力欄 */}
-          <FormControl id="username" isRequired mb={8}>
-            <FormLabel fontWeight="bold" color="orange.400">
-              ユーザーネーム
-            </FormLabel>
-            <Input
-              id="username"
-              type="username"
-              placeholder="ユーザー名を入力"
-              value={currentUser?.displayName ? username : ""}
-              onChange={(e) => setUsername(e.target.value)}
-              autoComplete="off"
+        <Box
+          rounded="lg"
+          bg="white"
+          boxShadow="lg"
+          py={10}
+          px={{ base: 4, sm: 4, md: 14 }}
+          w={{ base: "100%", sm: "80%", md: "55%" }}
+          maxW="lg"
+        >
+          {/* プロフィールアイコン */}
+          <VStack mb={8}>
+            <Image
+              src={currentUser?.photoURL ? currentUser.photoURL : "/user.png"}
+              alt={`profile icon of ${username}`}
+              borderRadius="100%"
+              maxW={40}
+              maxH={40}
             />
-          </FormControl>
-
-          {/* アイコン設定 */}
-          <FormControl mb={8}>
-            <FormLabel fontWeight="bold" color="orange.400">
-              プロフィールアイコン変更
-            </FormLabel>
-            <input type="file" onChange={handleImageSelect} />
-            <Text fontSize="sm" mt={2} color="red.500">
-              {!isUploaded && "画像をアップロードしています..."}
+            <Text fontSize="sm">
+              {!currentUser?.photoURL && "プロフィールアイコンが設定されていません"}
             </Text>
-          </FormControl>
-          <Stack>
-            <Center>
-              {/* 更新ボタン */}
-              <PrimaryButton loading={loading} bg="blue.400" color="white" type="submit" w="60%">
-                更新
-              </PrimaryButton>
-            </Center>
+          </VStack>
+          <Box mb={8}>
+            <Text fontWeight="bold" color="orange.400">
+              メールアドレス
+            </Text>
+            <Text mt={2}>{currentUser?.email}</Text>
+          </Box>
+          {/* プロフィール編集フォーム */}
+          <form onSubmit={(e) => handleUpdateButtonClick(e)}>
+            {/* ユーザーネーム入力欄 */}
+            <FormControl id="username" isRequired mb={8}>
+              <FormLabel fontWeight="bold" color="orange.400">
+                ユーザーネーム
+              </FormLabel>
+              <Input
+                id="username"
+                type="username"
+                placeholder="ユーザー名を入力"
+                value={currentUser?.displayName ? username : ""}
+                onChange={(e) => setUsername(e.target.value)}
+                autoComplete="off"
+              />
+            </FormControl>
 
-            <Center>
-              {/* 戻るボタン */}
-              <PrimaryButton
-                loading={loading}
-                bg="gray.400"
-                color="white"
-                w="60%"
-                onClick={() => router.push("/")}
-              >
-                戻る
-              </PrimaryButton>
-            </Center>
-          </Stack>
-        </form>
-      </Box>
-    </Flex>
+            {/* アイコン設定 */}
+            <FormControl mb={8}>
+              <FormLabel fontWeight="bold" color="orange.400">
+                プロフィールアイコン変更
+              </FormLabel>
+              <input type="file" onChange={handleImageSelect} />
+              <Text fontSize="sm" mt={2} color="red.500">
+                {!isUploaded && "画像をアップロードしています..."}
+              </Text>
+            </FormControl>
+            <Stack>
+              <Center>
+                {/* 更新ボタン */}
+                <PrimaryButton loading={loading} bg="blue.400" color="white" type="submit" w="60%">
+                  更新
+                </PrimaryButton>
+              </Center>
+
+              <Center>
+                {/* 戻るボタン */}
+                <PrimaryButton
+                  loading={loading}
+                  bg="gray.400"
+                  color="white"
+                  w="60%"
+                  onClick={() => router.back()}
+                >
+                  戻る
+                </PrimaryButton>
+              </Center>
+            </Stack>
+          </form>
+        </Box>
+      </Flex>
+    </TitleLayout>
   );
 };
 
