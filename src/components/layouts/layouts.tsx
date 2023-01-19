@@ -3,9 +3,9 @@ import { ReactNode } from "react";
 import Footer from "./footer/Footer";
 import Header from "./header/Header";
 
-type Props = { children: ReactNode; title: string };
+type Props = { children: ReactNode };
 
-const Layout = ({ children, title }: Props) => {
+const Layout = ({ children }: Props) => {
   return (
     <>
       <Header />
