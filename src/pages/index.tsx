@@ -97,9 +97,10 @@ const Home: NextPage = () => {
                 </Text>
                 <Flex pb={2} position="absolute" bottom={{ base: "0", md: "15px" }}>
                   <Image
-                    src="https://bit.ly/dan-abramov"
+                    src={data.photoURL ? data.photoURL : "/user.png"}
                     alt={data.contributor}
                     borderRadius="999px"
+                    objectFit="cover"
                     w="25px"
                     h="25px"
                   />

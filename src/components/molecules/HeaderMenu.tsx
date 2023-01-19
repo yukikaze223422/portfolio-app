@@ -28,6 +28,7 @@ const HeaderMenu = () => {
       <Flex justify="flex-end" fontSize="md" display={{ base: "none", md: "flex" }}>
         <HeaderLink href="/">ホーム</HeaderLink>
         <HeaderLink href="/post">投稿する</HeaderLink>
+        <HeaderLink href={"/mypage"}>マイページ</HeaderLink>
         <Link
           onClick={onClickLogout}
           fontWeight="bold"
