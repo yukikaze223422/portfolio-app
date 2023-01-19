@@ -1,7 +1,8 @@
-import { Badge, Box, Center, Flex, Image, Stack, Text } from "@chakra-ui/react";
+import { Badge, Box, Center, Flex, Image, Link, Stack, Text } from "@chakra-ui/react";
 import { GoogleMap, InfoWindowF, MarkerF } from "@react-google-maps/api";
 import { doc, getDoc } from "firebase/firestore";
 import { NextPage } from "next";
+import NextLink from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Geocode from "react-geocode";
@@ -132,9 +133,49 @@ const Detail: NextPage = () => {
           ) : null}
 
           {/* アカウント */}
-          <Text textAlign="left" fontSize="15px">
-            投稿者：{posts?.contributor}　
-          </Text>
+          {currentUser.uid === posts?.uid ? (
+            <Link
+              as={NextLink}
+              href="/mypage"
+              _hover={{ opacity: 0.8, color: "orange.500", textDecoration: "none" }}
+            >
+              <Flex direction="row">
+                <Text textAlign="left" fontSize="15px">
+                  投稿者：
+                </Text>
+                <Image
+                  src={posts?.picture ? posts?.picture : "/user.png"}
+                  alt={posts?.contributor}
+                  mr={1}
+                  borderRadius="999px"
+                  objectFit="cover"
+                  w="25px"
+                  h="25px"
+                />
+                <Text textAlign="left" fontSize="15px">
+                  {posts?.contributor}
+                </Text>
+              </Flex>
+            </Link>
+          ) : (
+            <Flex direction="row">
+              <Text textAlign="left" fontSize="15px">
+                投稿者：
+              </Text>
+              <Image
+                src={posts?.picture ? posts?.picture : "/user.png"}
+                alt={posts?.contributor}
+                mr={1}
+                borderRadius="999px"
+                objectFit="cover"
+                w="25px"
+                h="25px"
+              />
+              <Text textAlign="left" fontSize="15px">
+                {posts?.contributor}
+              </Text>
+            </Flex>
+          )}
 
           <Stack>
             {/* 編集ボタン：ログインしているユーザーと、投稿者idが一致した場合のみ表示*/}
