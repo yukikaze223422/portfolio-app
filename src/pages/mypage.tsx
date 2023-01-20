@@ -148,8 +148,8 @@ const MyPage: NextPage = () => {
 
   return (
     <TitleLayout title={"マイページ｜RamenSharing"}>
-      <Flex flexDirection="column" align="center" w="full" p={{ base: 2, sm: 4, md: 8 }}>
-        <Heading fontSize="4xl" mb={8}>
+      <Flex flexDirection="column" align="center" justify="center" p={{ base: 2, sm: 4, md: 8 }}>
+        <Heading fontSize="4xl" mb={8} color="orange.400">
           マイページ
         </Heading>
 

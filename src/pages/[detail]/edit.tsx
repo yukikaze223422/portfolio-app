@@ -23,7 +23,7 @@ import {
   useDisclosure,
   VStack,
 } from "@chakra-ui/react";
-import { deleteDoc, doc, getDoc, serverTimestamp, updateDoc } from "firebase/firestore";
+import { deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { validateImage } from "image-validator";
 import { NextPage } from "next";
@@ -157,7 +157,6 @@ const Edit: NextPage = () => {
             detail: data.review,
             address: data.address,
             picture: url,
-            updateTime: serverTimestamp(),
             contributor: currentUser.displayName,
           });
         })

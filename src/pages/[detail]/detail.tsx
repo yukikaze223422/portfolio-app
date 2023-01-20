@@ -1,4 +1,4 @@
-import { Badge, Box, Center, Flex, Image, Link, Stack, Text } from "@chakra-ui/react";
+import { Badge, Box, Center, Flex, HStack, Image, Link, Stack, Text } from "@chakra-ui/react";
 import { GoogleMap, InfoWindowF, MarkerF } from "@react-google-maps/api";
 import { doc, getDoc } from "firebase/firestore";
 import { NextPage } from "next";
@@ -109,7 +109,7 @@ const Detail: NextPage = () => {
             <Text fontSize={{ base: "2xl", sm: "3xl" }} fontWeight="bold" color="orange.400">
               レビュー
             </Text>
-            <Text fontSize={{ base: "sm", sm: "md" }} align="left">
+            <Text fontSize={{ base: "sm", sm: "md" }} align="left" whiteSpace="pre-wrap">
               {posts?.detail}
             </Text>
           </Box>
@@ -134,29 +134,31 @@ const Detail: NextPage = () => {
 
           {/* アカウント */}
           {currentUser.uid === posts?.uid ? (
-            <Link
-              as={NextLink}
-              href="/mypage"
-              _hover={{ opacity: 0.8, color: "orange.500", textDecoration: "none" }}
-            >
-              <Flex direction="row">
-                <Text textAlign="left" fontSize="15px">
-                  投稿者：
-                </Text>
-                <Image
-                  src={posts?.picture ? posts?.picture : "/user.png"}
-                  alt={posts?.contributor}
-                  mr={1}
-                  borderRadius="999px"
-                  objectFit="cover"
-                  w="25px"
-                  h="25px"
-                />
-                <Text textAlign="left" fontSize="15px">
-                  {posts?.contributor}
-                </Text>
-              </Flex>
-            </Link>
+            <HStack>
+              <Link
+                as={NextLink}
+                href="/mypage"
+                _hover={{ opacity: 0.8, color: "orange.500", textDecoration: "none" }}
+              >
+                <Flex direction="row" display="inline-flex">
+                  <Text textAlign="left" fontSize="15px">
+                    投稿者：
+                  </Text>
+                  <Image
+                    src={posts?.picture ? posts?.picture : "/user.png"}
+                    alt={posts?.contributor}
+                    mr={1}
+                    borderRadius="999px"
+                    objectFit="cover"
+                    w="25px"
+                    h="25px"
+                  />
+                  <Text textAlign="left" fontSize="15px">
+                    {posts?.contributor}
+                  </Text>
+                </Flex>
+              </Link>
+            </HStack>
           ) : (
             <Flex direction="row">
               <Text textAlign="left" fontSize="15px">

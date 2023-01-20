@@ -214,15 +214,15 @@ const Post: NextPage = () => {
                   </FormLabel>
                 </HStack>
                 <Textarea
-                  placeholder="ラーメンの感想を書いてください。（450文字以内）"
+                  placeholder="ラーメンの感想を書いてください。（1000文字以内）"
                   rows={5}
                   w="90%"
                   id="review"
                   {...register("review", {
                     required: "レビューを入力してください",
                     maxLength: {
-                      value: 450,
-                      message: "450文字以内で入力してください",
+                      value: 1000,
+                      message: "1000文字以内で入力してください",
                     },
                   })}
                   autoComplete="off"

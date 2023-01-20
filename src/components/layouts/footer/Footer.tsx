@@ -1,4 +1,4 @@
-import { Container } from "@chakra-ui/react";
+import { Container, Flex } from "@chakra-ui/react";
 
 const Footer = () => {
   return (
@@ -10,7 +10,7 @@ const Footer = () => {
       borderTop="1px"
       borderColor="gray.200"
     >
-      &copy; 2022 RamenSharing All rights reserved.
+      <Flex justify="center">&copy; 2022 RamenSharing All rights reserved.</Flex>
     </Container>
   );
 };

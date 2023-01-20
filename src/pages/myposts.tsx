@@ -1,5 +1,5 @@
 import { Badge, Flex, Heading, Image, Link, Stack, Text, VStack } from "@chakra-ui/react";
-import { collection, getDocs, orderBy, query } from "firebase/firestore";
+import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
 import { NextPage } from "next";
 import NextLink from "next/link";
 import { useEffect, useState } from "react";
@@ -29,7 +29,11 @@ const MyPosts: NextPage = () => {
 
   useEffect(() => {
     const ramenDataRef = collection(db, "ramenData");
-    const sortRamenDataRef = query(ramenDataRef, orderBy("createTime", "desc"));
+    const sortRamenDataRef = query(
+      ramenDataRef,
+      where("uid", "==", currentUser.uid),
+      orderBy("createTime", "desc")
+    );
     getDocs(sortRamenDataRef).then((querySnapshot) => {
       setRamenData(
         querySnapshot.docs.map((doc) => ({
@@ -49,6 +53,9 @@ const MyPosts: NextPage = () => {
   return (
     <TitleLayout title={"投稿管理｜RamenSharing"}>
       <VStack py={12} gap={4}>
+        <Heading fontSize="4xl" color="orange.400">
+          あなたの投稿
+        </Heading>
         {ramenData.slice(offset, offset + perPage).map(
           (data) =>
             currentUser.uid === data.uid && (

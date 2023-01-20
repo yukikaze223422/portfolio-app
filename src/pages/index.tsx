@@ -46,6 +46,9 @@ const Home: NextPage = () => {
   return (
     <TitleLayout title={"RamenSharing｜おすすめラーメン共有サイト"}>
       <VStack py={12} gap={4}>
+        <Heading fontSize="4xl" color="orange.400">
+          みんなの投稿
+        </Heading>
         {ramenData.slice(offset, offset + perPage).map((data) => (
           <Link
             as={NextLink}
