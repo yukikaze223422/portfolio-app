@@ -162,11 +162,7 @@ const MyPage: NextPage = () => {
         >
           {/* プロフィールアイコン */}
           <VStack mb={4}>
-            <Avatar
-              size="2xl"
-              name={username}
-              src={currentUser?.photoURL ? currentUser.photoURL : "/user.png"}
-            />
+            <Avatar size="2xl" name={username} src={currentUser?.photoURL} />
             <Text fontSize="sm">
               {!currentUser?.photoURL && "プロフィールアイコンが設定されていません"}
             </Text>

@@ -144,7 +144,7 @@ const Detail: NextPage = () => {
           ) : null}
 
           {/* アカウント */}
-          {currentUser.uid === posts?.uid ? (
+          {currentUser?.uid === posts?.uid ? (
             <HStack>
               <Link
                 as={NextLink}
@@ -155,11 +155,7 @@ const Detail: NextPage = () => {
                   <Text textAlign="left" fontSize="15px">
                     投稿者：
                   </Text>
-                  <Avatar
-                    size="sm"
-                    name={posts?.contributor}
-                    src={posts?.photoURL ? posts?.photoURL : "/user.png"}
-                  />
+                  <Avatar size="sm" name={posts?.contributor} src={posts?.photoURL} />
                   <Text textAlign="left" fontSize="15px">
                     {posts?.contributor}
                   </Text>
@@ -172,7 +168,7 @@ const Detail: NextPage = () => {
                 投稿者：
               </Text>
               <Image
-                src={posts?.photoURL ? posts?.photoURL : "/user.png"}
+                src={posts?.photoURL}
                 alt={posts?.contributor}
                 mr={1}
                 borderRadius="999px"

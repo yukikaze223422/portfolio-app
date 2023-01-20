@@ -58,7 +58,7 @@ const MyPosts: NextPage = () => {
         </Heading>
         {ramenData.slice(offset, offset + perPage).map(
           (data) =>
-            currentUser.uid === data.uid && (
+            currentUser?.uid === data.uid && (
               <Link
                 as={NextLink}
                 href={`${data.id}/detail`}
@@ -109,11 +109,7 @@ const MyPosts: NextPage = () => {
                       {data.detail}
                     </Text>
                     <Flex pb={2} position="absolute" bottom={{ base: "0", md: "15px" }}>
-                      <Avatar
-                        size="xs"
-                        name={data.contributor}
-                        src={data.photoURL ? data.photoURL : "/user.png"}
-                      />
+                      <Avatar size="xs" name={data.contributor} src={data.photoURL} />
                       <Flex direction={{ base: "column", md: "row" }}>
                         <Text>&nbsp;{data.contributor}　</Text>
                         <Text>投稿日時：{getDisplayTime(data.createTime)}</Text>
