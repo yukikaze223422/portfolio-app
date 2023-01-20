@@ -9,7 +9,7 @@ const Layout = ({ children }: Props) => {
   return (
     <>
       <Header />
-      <Flex direction="column" bg="orange.50" w="full" h="full" minH="660px">
+      <Flex direction="column" bg="orange.50">
         {children}
       </Flex>
       <Footer />

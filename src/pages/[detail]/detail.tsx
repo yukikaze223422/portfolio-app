@@ -1,12 +1,25 @@
-import { Badge, Box, Center, Flex, Image, Stack, Text } from "@chakra-ui/react";
+import {
+  Avatar,
+  Badge,
+  Box,
+  Center,
+  Flex,
+  HStack,
+  Image,
+  Link,
+  Stack,
+  Text,
+} from "@chakra-ui/react";
 import { GoogleMap, InfoWindowF, MarkerF } from "@react-google-maps/api";
 import { doc, getDoc } from "firebase/firestore";
 import { NextPage } from "next";
+import NextLink from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Geocode from "react-geocode";
 import { db } from "../../../firebase";
 import PrimaryButton from "../../components/elements/Button/PrimaryButton";
+import TitleLayout from "../../components/layouts/titleLayout";
 import { useAuthContext } from "../../context/AuthContext";
 import { Data } from "../../types/data";
 
@@ -52,13 +65,13 @@ const Detail: NextPage = () => {
           detail: docSnap.data().detail,
           address: docSnap.data().address,
           picture: docSnap.data().picture,
+          photoURL: docSnap.data().photoURL,
           contributor: docSnap.data().contributor,
         });
         if (docSnap.data().address !== "") {
           Geocode.setApiKey(process.env.NEXT_PUBLIC_GOOGLEMAP_API_KEY);
           await Geocode.fromAddress(docSnap.data().address).then(
             (response) => {
-              console.log(response);
               const { lat, lng } = response.results[0].geometry.location;
               setLat(lat);
               setLng(lng);
@@ -76,69 +89,91 @@ const Detail: NextPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  console.log(lat);
-  console.log(lng);
-  console.log(detail.id);
-
   return (
-    <Flex flexDirection="column" align="center" w="full">
-      <Stack textAlign="center" w={{ base: "100%", md: "80%" }} p={4} spacing="4">
-        {/* 店舗名 */}
-        <Text my={4} fontSize={{ base: "3xl", sm: "4xl" }} fontWeight="bold" color="orange.400">
-          {posts?.storeName}
-        </Text>
-
-        {/* ラーメン画像 */}
-        <Image
-          src={posts?.picture}
-          alt={posts?.ramenName}
-          objectFit="contain"
-          borderRadius="3%"
-          maxH="lg"
-        />
-
-        {/* ラーメン名 */}
-        <Text fontSize={{ base: "xl", sm: "3xl" }} fontWeight="bold" color="orange.400">
-          {posts?.ramenName}
-          <Badge variant="solid" colorScheme="green" ml={2} fontSize="sm">
-            {posts?.base}
-          </Badge>
-        </Text>
-
-        {/* ラーメンのレビュー */}
-        <Box rounded="lg" bg="white" boxShadow="lg" py={7} px={{ base: 4, md: 10 }}>
-          <Text fontSize={{ base: "2xl", sm: "3xl" }} fontWeight="bold" color="orange.400">
-            レビュー
+    <TitleLayout title={"詳細｜RamenSharing"}>
+      <Flex flexDirection="column" align="center">
+        <Stack textAlign="center" w={{ base: "100%", md: "80%" }} p={4} spacing="4">
+          {/* 店舗名 */}
+          <Text my={4} fontSize={{ base: "3xl", sm: "4xl" }} fontWeight="bold" color="orange.400">
+            {posts?.storeName}
           </Text>
-          <Text fontSize={{ base: "sm", sm: "md" }} align="left">
-            {posts?.detail}
-          </Text>
-        </Box>
 
-        {/* 店舗住所 */}
-        {lng !== null && lat !== null ? (
-          <Box rounded="lg" bg="white" boxShadow="lg" py={10} px={{ base: 4, md: 10 }}>
+          {/* ラーメン画像 */}
+          <Image
+            src={posts?.picture}
+            alt={posts?.ramenName}
+            objectFit="contain"
+            borderRadius="3%"
+            maxH="lg"
+          />
+
+          {/* ラーメン名 */}
+          <Text fontSize={{ base: "xl", sm: "3xl" }} fontWeight="bold" color="orange.400">
+            {posts?.ramenName}
+            <Badge variant="solid" colorScheme="green" ml={2} fontSize="sm">
+              {posts?.base}
+            </Badge>
+          </Text>
+
+          {/* ラーメンのレビュー */}
+          <Box rounded="lg" bg="white" boxShadow="lg" py={7} px={{ base: 4, md: 10 }}>
             <Text fontSize={{ base: "2xl", sm: "3xl" }} fontWeight="bold" color="orange.400">
-              所在地
+              レビュー
             </Text>
-            <Text fontSize={{ base: "xl", sm: "2xl" }}>{posts?.address}</Text>
-            <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={17}>
-              <MarkerF position={position} />
-              <InfoWindowF position={position}>
-                <Box style={divStyle}>
-                  <Text fontWeight="bold">{posts?.storeName}</Text>
-                </Box>
-              </InfoWindowF>
-            </GoogleMap>
+            <Text fontSize={{ base: "sm", sm: "md" }} align="left" whiteSpace="pre-wrap">
+              {posts?.detail}
+            </Text>
           </Box>
-        ) : null}
 
-        {/* アカウント */}
-        <Text textAlign="left" fontSize="15px">
-          投稿者：{posts?.contributor}　
-        </Text>
+          {/* 店舗住所 */}
+          {lng !== null && lat !== null ? (
+            <Box rounded="lg" bg="white" boxShadow="lg" py={10} px={{ base: 4, md: 10 }}>
+              <Text fontSize={{ base: "2xl", sm: "3xl" }} fontWeight="bold" color="orange.400">
+                所在地
+              </Text>
+              <Text fontSize={{ base: "xl", sm: "2xl" }}>{posts?.address}</Text>
+              <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={17}>
+                <MarkerF position={position} />
+                <InfoWindowF position={position}>
+                  <Box style={divStyle}>
+                    <Text fontWeight="bold">{posts?.storeName}</Text>
+                  </Box>
+                </InfoWindowF>
+              </GoogleMap>
+            </Box>
+          ) : null}
 
-        <Stack>
+          {/* アカウント */}
+          {currentUser?.uid === posts?.uid ? (
+            <HStack>
+              <Link
+                as={NextLink}
+                href="/mypage"
+                _hover={{ opacity: 0.8, color: "orange.500", textDecoration: "none" }}
+              >
+                <HStack>
+                  <Text textAlign="left" fontSize="15px">
+                    投稿者：
+                  </Text>
+                  <Avatar size="sm" name={posts?.contributor} src={posts?.photoURL} />
+                  <Text textAlign="left" fontSize="15px">
+                    {posts?.contributor}
+                  </Text>
+                </HStack>
+              </Link>
+            </HStack>
+          ) : (
+            <HStack>
+              <Text textAlign="left" fontSize="15px">
+                投稿者：
+              </Text>
+              <Avatar size="sm" name={posts?.contributor} src={posts?.photoURL} />
+              <Text textAlign="left" fontSize="15px">
+                {posts?.contributor}
+              </Text>
+            </HStack>
+          )}
+
           {/* 編集ボタン：ログインしているユーザーと、投稿者idが一致した場合のみ表示*/}
           <Center>
             {currentUser?.uid === posts?.uid && (
@@ -163,16 +198,14 @@ const Detail: NextPage = () => {
               color="white"
               type="button"
               w="40%"
-              onClick={() => {
-                router.push("/");
-              }}
+              onClick={() => router.back()}
             >
               戻る
             </PrimaryButton>
           </Center>
         </Stack>
-      </Stack>
-    </Flex>
+      </Flex>
+    </TitleLayout>
   );
 };
 
