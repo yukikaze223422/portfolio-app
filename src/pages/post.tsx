@@ -129,11 +129,6 @@ const Post: NextPage = () => {
     setLoading(false);
   };
 
-  //ホーム画面へ遷移
-  const onClickHome = () => {
-    router.push("/");
-  };
-
   return (
     <TitleLayout title={"投稿する｜RamenSharing"}>
       <Flex align="center" justify="center">
@@ -293,9 +288,9 @@ const Post: NextPage = () => {
                   color="white"
                   type="button"
                   w="40%"
-                  onClick={onClickHome}
+                  onClick={() => router.push("/")}
                 >
-                  戻る
+                  TOPへ
                 </PrimaryButton>
               </VStack>
             </form>

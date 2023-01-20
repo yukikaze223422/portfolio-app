@@ -215,9 +215,9 @@ const MyPage: NextPage = () => {
                   bg="gray.400"
                   color="white"
                   w="60%"
-                  onClick={() => router.back()}
+                  onClick={() => router.push("/")}
                 >
-                  戻る
+                  TOPへ
                 </PrimaryButton>
               </Center>
             </Stack>

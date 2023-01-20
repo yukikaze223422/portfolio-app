@@ -163,23 +163,15 @@ const Detail: NextPage = () => {
               </Link>
             </HStack>
           ) : (
-            <Flex direction="row">
+            <HStack>
               <Text textAlign="left" fontSize="15px">
                 投稿者：
               </Text>
-              <Image
-                src={posts?.photoURL}
-                alt={posts?.contributor}
-                mr={1}
-                borderRadius="999px"
-                objectFit="cover"
-                w="25px"
-                h="25px"
-              />
+              <Avatar size="sm" name={posts?.contributor} src={posts?.photoURL} />
               <Text textAlign="left" fontSize="15px">
                 {posts?.contributor}
               </Text>
-            </Flex>
+            </HStack>
           )}
 
           {/* 編集ボタン：ログインしているユーザーと、投稿者idが一致した場合のみ表示*/}
