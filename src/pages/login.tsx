@@ -44,10 +44,7 @@ const Login: NextPage = () => {
     try {
       setLoading(true);
       await signInWithEmailAndPassword(auth, email, password);
-      if (currentUser !== null) {
-        router.push("/");
-        showMessage({ title: "ログインしました。", status: "success" });
-      }
+      showMessage({ title: "ログインしました。", status: "success" });
     } catch (err) {
       showMessage({ title: "ログインできませんでした。", status: "error" });
     }
@@ -64,10 +61,7 @@ const Login: NextPage = () => {
       await updateProfile(auth.currentUser, {
         displayName: user,
       });
-      if (currentUser !== null) {
-        router.push("/");
-        showMessage({ title: "ログインしました。", status: "success" });
-      }
+      showMessage({ title: "ログインしました。", status: "success" });
     } catch {
       showMessage({ title: "ログインできませんでした。", status: "error" });
     }
@@ -81,14 +75,12 @@ const Login: NextPage = () => {
     try {
       setLoading(true);
       await signInWithEmailAndPassword(auth, guestEmail, guestPassword);
+      const user = auth.currentUser.displayName;
       await updateProfile(auth.currentUser, {
-        displayName: currentUser.displayName ? currentUser.displayName : "Guest",
+        displayName: user ? user : "Guest",
       });
-      if (currentUser !== null) {
-        router.push("/");
-        showMessage({ title: "ログインしました。", status: "success" });
-      }
-    } catch (err) {
+      showMessage({ title: "ログインしました。", status: "success" });
+    } catch {
       showMessage({ title: "ログインできませんでした。", status: "error" });
     }
     setLoading(false);
