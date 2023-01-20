@@ -1,4 +1,4 @@
-import { Badge, Flex, Heading, Image, Link, Stack, Text, VStack } from "@chakra-ui/react";
+import { Avatar, Badge, Flex, Heading, Image, Link, Stack, Text, VStack } from "@chakra-ui/react";
 import { collection, getDocs, orderBy, query } from "firebase/firestore";
 import { NextPage } from "next";
 import NextLink from "next/link";
@@ -100,13 +100,10 @@ const Home: NextPage = () => {
                   {data.detail}
                 </Text>
                 <Flex pb={2} position="absolute" bottom={{ base: "0", md: "15px" }}>
-                  <Image
+                  <Avatar
+                    size="xs"
+                    name={data.contributor}
                     src={data.photoURL ? data.photoURL : "/user.png"}
-                    alt={data.contributor}
-                    borderRadius="999px"
-                    objectFit="cover"
-                    w="25px"
-                    h="25px"
                   />
                   <Flex direction={{ base: "column", md: "row" }}>
                     <Text>&nbsp;{data.contributor}　</Text>

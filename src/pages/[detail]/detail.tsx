@@ -1,4 +1,15 @@
-import { Badge, Box, Center, Flex, HStack, Image, Link, Stack, Text } from "@chakra-ui/react";
+import {
+  Avatar,
+  Badge,
+  Box,
+  Center,
+  Flex,
+  HStack,
+  Image,
+  Link,
+  Stack,
+  Text,
+} from "@chakra-ui/react";
 import { GoogleMap, InfoWindowF, MarkerF } from "@react-google-maps/api";
 import { doc, getDoc } from "firebase/firestore";
 import { NextPage } from "next";
@@ -54,13 +65,13 @@ const Detail: NextPage = () => {
           detail: docSnap.data().detail,
           address: docSnap.data().address,
           picture: docSnap.data().picture,
+          photoURL: docSnap.data().photoURL,
           contributor: docSnap.data().contributor,
         });
         if (docSnap.data().address !== "") {
           Geocode.setApiKey(process.env.NEXT_PUBLIC_GOOGLEMAP_API_KEY);
           await Geocode.fromAddress(docSnap.data().address).then(
             (response) => {
-              console.log(response);
               const { lat, lng } = response.results[0].geometry.location;
               setLat(lat);
               setLng(lng);
@@ -140,23 +151,19 @@ const Detail: NextPage = () => {
                 href="/mypage"
                 _hover={{ opacity: 0.8, color: "orange.500", textDecoration: "none" }}
               >
-                <Flex direction="row" display="inline-flex">
+                <HStack>
                   <Text textAlign="left" fontSize="15px">
                     投稿者：
                   </Text>
-                  <Image
-                    src={posts?.picture ? posts?.picture : "/user.png"}
-                    alt={posts?.contributor}
-                    mr={1}
-                    borderRadius="999px"
-                    objectFit="cover"
-                    w="25px"
-                    h="25px"
+                  <Avatar
+                    size="sm"
+                    name={posts?.contributor}
+                    src={posts?.photoURL ? posts?.photoURL : "/user.png"}
                   />
                   <Text textAlign="left" fontSize="15px">
                     {posts?.contributor}
                   </Text>
-                </Flex>
+                </HStack>
               </Link>
             </HStack>
           ) : (
@@ -165,7 +172,7 @@ const Detail: NextPage = () => {
                 投稿者：
               </Text>
               <Image
-                src={posts?.picture ? posts?.picture : "/user.png"}
+                src={posts?.photoURL ? posts?.photoURL : "/user.png"}
                 alt={posts?.contributor}
                 mr={1}
                 borderRadius="999px"

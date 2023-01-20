@@ -1,11 +1,11 @@
 import {
+  Avatar,
   Box,
   Center,
   Flex,
   FormControl,
   FormLabel,
   Heading,
-  Image,
   Input,
   Stack,
   Text,
@@ -111,10 +111,8 @@ const MyPage: NextPage = () => {
         })
         .catch((err) => console.log(err));
     } catch (err) {
-      console.log("エラー");
+      console.log(err);
     }
-    console.log("currentUser:" + currentUser.photoURL);
-    console.log("currentUser:" + currentUser.displayName);
     const q = query(collection(db, "ramenData"), where("uid", "==", currentUser.uid));
 
     const querySnapshot = await getDocs(q);
@@ -131,7 +129,7 @@ const MyPage: NextPage = () => {
           console.log(error);
           router.reload();
           showMessage({
-            title: "更新が完了できませんでした",
+            title: "更新ができませんでした",
             status: "error",
           });
           return;
@@ -164,12 +162,10 @@ const MyPage: NextPage = () => {
         >
           {/* プロフィールアイコン */}
           <VStack mb={8}>
-            <Image
+            <Avatar
+              size="2xl"
+              name={username}
               src={currentUser?.photoURL ? currentUser.photoURL : "/user.png"}
-              alt={`profile icon of ${username}`}
-              borderRadius="100%"
-              maxW={40}
-              maxH={40}
             />
             <Text fontSize="sm">
               {!currentUser?.photoURL && "プロフィールアイコンが設定されていません"}

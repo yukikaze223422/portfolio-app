@@ -114,6 +114,7 @@ const Post: NextPage = () => {
             detail: data.review,
             address: data.address,
             picture: url,
+            photoURL: currentUser.photoURL,
             createTime: serverTimestamp(),
             contributor: currentUser.displayName,
           });

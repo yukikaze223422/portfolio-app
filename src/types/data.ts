@@ -4,8 +4,9 @@ export type Data = {
   ramenName: string;
   base: string;
   detail: string;
+  contributor: string;
   address?: string;
   picture?: string;
+  photoURL?: string;
   createTime?: any;
-  contributor: string;
 };
