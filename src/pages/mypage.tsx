@@ -161,7 +161,7 @@ const MyPage: NextPage = () => {
           maxW="lg"
         >
           {/* プロフィールアイコン */}
-          <VStack mb={8}>
+          <VStack mb={4}>
             <Avatar
               size="2xl"
               name={username}
