@@ -76,10 +76,10 @@ const SignUp: NextPage = () => {
       }
       router.push("/mypage");
       showMessage({ title: "登録が完了しました。", status: "success" });
-      setLoading(false);
     } catch (err) {
       showMessage({ title: "登録できませんでした。", status: "error" });
     }
+    setLoading(false);
   };
 
   //Googleログイン処理
