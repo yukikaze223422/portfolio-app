@@ -82,7 +82,7 @@ const Login: NextPage = () => {
       setLoading(true);
       await signInWithEmailAndPassword(auth, guestEmail, guestPassword);
       await updateProfile(auth.currentUser, {
-        displayName: "Guest",
+        displayName: currentUser.displayName ? currentUser.displayName : "Guest",
       });
       if (currentUser !== null) {
         router.push("/");

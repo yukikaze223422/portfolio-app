@@ -34,7 +34,6 @@ import { RiLockPasswordLine } from "react-icons/ri";
 import { auth, db } from "../../firebase";
 import PrimaryButton from "../components/elements/Button/PrimaryButton";
 import TitleLayout from "../components/layouts/titleLayout";
-import { useAuthContext } from "../context/AuthContext";
 import { useMessage } from "../hooks/useMessage";
 
 type LoginUser = {
@@ -46,7 +45,6 @@ type LoginUser = {
 //サインアップページ
 const SignUp: NextPage = () => {
   const { showMessage } = useMessage();
-  const { currentUser } = useAuthContext();
 
   const {
     register,
@@ -76,10 +74,8 @@ const SignUp: NextPage = () => {
           displayName: data.username,
         });
       }
-      if (currentUser !== null) {
-        router.push("/mypage");
-        showMessage({ title: "登録が完了しました。", status: "success" });
-      }
+      router.push("/mypage");
+      showMessage({ title: "登録が完了しました。", status: "success" });
       setLoading(false);
     } catch (err) {
       showMessage({ title: "登録できませんでした。", status: "error" });
@@ -96,10 +92,8 @@ const SignUp: NextPage = () => {
       await updateProfile(auth.currentUser, {
         displayName: user,
       });
-      if (currentUser !== null) {
-        router.push("/mypage");
-        showMessage({ title: "登録しました。", status: "success" });
-      }
+      router.push("/");
+      showMessage({ title: "登録しました。", status: "success" });
     } catch {
       showMessage({ title: "登録できませんでした。", status: "error" });
     }
@@ -129,8 +123,8 @@ const SignUp: NextPage = () => {
                   {...register("username", {
                     required: "ユーザー名を入力してください",
                     maxLength: {
-                      value: 10,
-                      message: "10文字以内で入力してください",
+                      value: 15,
+                      message: "15文字以内で入力してください",
                     },
                   })}
                   placeholder="ユーザー名"
@@ -171,7 +165,7 @@ const SignUp: NextPage = () => {
                 </FormControl>
 
                 {/* パスワード入力欄 */}
-                <FormControl isInvalid={errors.email ? true : false}>
+                <FormControl isInvalid={errors.password ? true : false}>
                   <HStack my={2}>
                     <RiLockPasswordLine />
                     <FormLabel htmlFor="password" fontWeight="bold">
