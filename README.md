@@ -1,8 +1,7 @@
 # アプリケーション名
 
 ### RamenSharing（ラーメンシェアリング）
-
-![アプリ画像]([https://github.com/mori-corp/sharefolio/blob/images/ShareFolio.png](https://firebasestorage.googleapis.com/v0/b/portfolio-app-9fa16.appspot.com/o/RamenSharing.png?alt=media&token=e5af7fd5-a14f-47e2-bc9e-9bdd76f4948b))
+![アプリ画像](https://github.com/yukikaze223422/portfolio-app/blob/main/RamenSharing.png)
 
 <br>
 
