@@ -85,12 +85,13 @@
   - React(v18.2.0)
   - Next.js(v13.0.6)
   - Typescript
-  - useContext
   - Chakra UI(v2.4.3)
 - バックエンド
   - Firebase (v9.15.0)
   - Maps JavaScript API(外部API)
   - Geocoding API(外部API)
+- 状態管理
+  - useContext
 - その他
   - Vercel
 
