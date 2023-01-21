@@ -2,7 +2,7 @@
 
 ### RamenSharing（ラーメンシェアリング）
 
-![アプリ画像](https://github.com/mori-corp/sharefolio/blob/images/ShareFolio.png)
+![アプリ画像]([https://github.com/mori-corp/sharefolio/blob/images/ShareFolio.png](https://firebasestorage.googleapis.com/v0/b/portfolio-app-9fa16.appspot.com/o/RamenSharing.png?alt=media&token=e5af7fd5-a14f-47e2-bc9e-9bdd76f4948b))
 
 <br>
 
@@ -14,13 +14,13 @@
 
 # アプリ URL
 
-portfolio-app-eta-cyan.vercel.app
+[portfolio-app-eta-cyan.vercel.app](https://portfolio-app-eta-cyan.vercel.app/)
 
 <br>
 
 # アプリを作成した背景
 
-ポートフォリオアプリのアイディアを探していた際に、何を作れば良いのかわからず、やみくもに Google で検索をかけていました。
+ポートフォリオアプリのアイディアを探していた際に、何を作れば良いのかわからず、やみくもに Google で検索をかけていました。<br>
 それでも、アイデアが浮かばなかったため、浮かばないなら好きな食べ物を軸に何かを作ってみようということで私がラーメンが好きということもあり、おいしいラーメンをすぐに確認できるアプリがあればいいなと考えたことがアプリ開発のきっかけとなりました。
 
 <br>
@@ -104,9 +104,17 @@ portfolio-app-eta-cyan.vercel.app
 
 <br>
 
-### 2. ユーザー目線のレイアウト
+### 3. ユーザー目線のレイアウト
 
 極力、ユーザーに対してわかりやすいようなボタン配置にしたり、ページネーションをつけて投稿を見やすくしたりなど、シンプルで見やすく扱いやすいような設計を意識しました。
+
+<br>
+
+### 4. GoogleMapによる連携
+
+投稿一覧の各カードを押下すると、詳細画面に遷移し投稿に住所を設定していると住所に応じたGoogleMapが表示されるようにしました。
+詳細画面に遷移した直後に、Firebase Firestoreより住所を読み込んで、Geocoding APIから取得した住所をもとに緯度・経度を取得し、Maps JavaScript APIを用いてGoogle Mapを表示させるという手順を踏んでいます。
+APIを初めて使ったということもあり、実装に時間がかかりましたが正常に表示させることができました。
 
 <br>
 
