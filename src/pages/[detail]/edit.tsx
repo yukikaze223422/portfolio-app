@@ -264,8 +264,8 @@ const Edit: NextPage = () => {
                   {...register("review", {
                     required: "レビューを入力してください",
                     maxLength: {
-                      value: 450,
-                      message: "450文字以内で入力してください",
+                      value: 1000,
+                      message: "1000文字以内で入力してください",
                     },
                   })}
                   autoComplete="off"
