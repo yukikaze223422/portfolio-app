@@ -1,3 +1,4 @@
+import { useAuthContext } from "@/context/AuthContext";
 import {
   Button,
   Drawer,
@@ -7,7 +8,6 @@ import {
   DrawerOverlay,
   VStack,
 } from "@chakra-ui/react";
-import { useAuthContext } from "../../context/AuthContext";
 import HeaderLoginMenuDrawer from "./HeaderLoginMenuDrawer";
 import HeaderMenuDrawer from "./HeaderMenuDrawer";
 

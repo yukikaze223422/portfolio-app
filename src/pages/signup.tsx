@@ -1,3 +1,7 @@
+import { auth, db } from "@/../firebase";
+import PrimaryButton from "@/components/elements/Button/PrimaryButton";
+import TitleLayout from "@/components/layouts/titleLayout";
+import { useMessage } from "@/hooks/useMessage";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import {
   Box,
@@ -31,10 +35,6 @@ import { AiOutlineMail } from "react-icons/ai";
 import { FcGoogle } from "react-icons/fc";
 import { FiUser } from "react-icons/fi";
 import { RiLockPasswordLine } from "react-icons/ri";
-import { auth, db } from "../../firebase";
-import PrimaryButton from "../components/elements/Button/PrimaryButton";
-import TitleLayout from "../components/layouts/titleLayout";
-import { useMessage } from "../hooks/useMessage";
 
 type LoginUser = {
   username: string;

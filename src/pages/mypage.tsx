@@ -1,3 +1,8 @@
+import { db, storage } from "@/../firebase";
+import PrimaryButton from "@/components/elements/Button/PrimaryButton";
+import TitleLayout from "@/components/layouts/titleLayout";
+import { useAuthContext } from "@/context/AuthContext";
+import { useMessage } from "@/hooks/useMessage";
 import {
   Avatar,
   Box,
@@ -18,11 +23,6 @@ import { validateImage } from "image-validator";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { db, storage } from "../../firebase";
-import PrimaryButton from "../components/elements/Button/PrimaryButton";
-import TitleLayout from "../components/layouts/titleLayout";
-import { useAuthContext } from "../context/AuthContext";
-import { useMessage } from "../hooks/useMessage";
 
 /**
     ユーザープロフィールページ

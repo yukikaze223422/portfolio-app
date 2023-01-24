@@ -1,11 +1,11 @@
+import { auth } from "@/../firebase";
+import HeaderLink from "@/components/elements/Link/HeaderLink ";
+import { useAuthContext } from "@/context/AuthContext";
+import { useMessage } from "@/hooks/useMessage";
 import { Flex, Image, Link } from "@chakra-ui/react";
 import { signOut } from "firebase/auth";
 import NextLink from "next/link";
 import { NextRouter, useRouter } from "next/router";
-import { auth } from "../../../firebase";
-import { useAuthContext } from "../../context/AuthContext";
-import { useMessage } from "../../hooks/useMessage";
-import HeaderLink from "../elements/Link/HeaderLink ";
 
 const HeaderMenu = () => {
   const { showMessage } = useMessage();

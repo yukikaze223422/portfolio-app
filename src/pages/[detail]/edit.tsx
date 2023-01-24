@@ -1,3 +1,10 @@
+import { db, storage } from "@/../firebase";
+import PrimaryButton from "@/components/elements/Button/PrimaryButton";
+import TitleLayout from "@/components/layouts/titleLayout";
+import { useAuthContext } from "@/context/AuthContext";
+import { useMessage } from "@/hooks/useMessage";
+import { Data } from "@/types/data";
+import { Inputs } from "@/types/inputs";
 import {
   AlertDialog,
   AlertDialogBody,
@@ -30,13 +37,6 @@ import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { db, storage } from "../../../firebase";
-import PrimaryButton from "../../components/elements/Button/PrimaryButton";
-import TitleLayout from "../../components/layouts/titleLayout";
-import { useAuthContext } from "../../context/AuthContext";
-import { useMessage } from "../../hooks/useMessage";
-import { Data } from "../../types/data";
-import { Inputs } from "../../types/inputs";
 
 const Edit: NextPage = () => {
   const router = useRouter();

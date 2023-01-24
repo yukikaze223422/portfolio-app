@@ -1,12 +1,12 @@
+import { db } from "@/../firebase";
+import TitleLayout from "@/components/layouts/titleLayout";
+import { useAuthContext } from "@/context/AuthContext";
 import { Avatar, Badge, Flex, Heading, Image, Link, Stack, Text, VStack } from "@chakra-ui/react";
 import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
 import { NextPage } from "next";
 import NextLink from "next/link";
 import { useEffect, useState } from "react";
 import ReactPaginate from "react-paginate";
-import { db } from "../../firebase";
-import TitleLayout from "../components/layouts/titleLayout";
-import { useAuthContext } from "../context/AuthContext";
 
 // timestampを、yy/mm/dd/hh/mm形式へ変換
 const getDisplayTime = (e: any) => {
