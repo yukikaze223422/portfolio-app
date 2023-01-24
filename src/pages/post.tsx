@@ -2,7 +2,7 @@ import { db, storage } from "@/../firebase";
 import PrimaryButton from "@/components/elements/Button/PrimaryButton";
 import TitleLayout from "@/components/layouts/titleLayout";
 import { useAuthContext } from "@/context/AuthContext";
-import { useMessage } from "@/hooks/useMessage";
+import { useAlertMessage } from "@/hooks/useAlertMessage";
 import { Inputs } from "@/types/inputs";
 import {
   Badge,
@@ -30,7 +30,7 @@ import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 
 const Post: NextPage = () => {
-  const { showMessage } = useMessage();
+  const { showMessage } = useAlertMessage();
   const { currentUser } = useAuthContext();
 
   //バリデーション（react-hook-form）

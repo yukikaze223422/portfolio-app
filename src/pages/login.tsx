@@ -1,8 +1,7 @@
 import { auth } from "@/../firebase";
 import PrimaryButton from "@/components/elements/Button/PrimaryButton";
 import TitleLayout from "@/components/layouts/titleLayout";
-import { useAuthContext } from "@/context/AuthContext";
-import { useMessage } from "@/hooks/useMessage";
+import { useAlertMessage } from "@/hooks/useAlertMessage";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import {
   Box,
@@ -24,20 +23,17 @@ import {
 } from "firebase/auth";
 import type { NextPage } from "next";
 import NextLink from "next/link";
-import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 
 //ログインページ
 const Login: NextPage = () => {
-  const { showMessage } = useMessage();
-  const { currentUser } = useAuthContext();
+  const { showMessage } = useAlertMessage();
 
   const [loading, setLoading] = useState<boolean>(false);
   const [isRevealPassword, setIsRevealPassword] = useState<boolean>(false);
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const router = useRouter();
 
   //通常ログイン処理
   const emailLogin = async (email: string, password: string) => {

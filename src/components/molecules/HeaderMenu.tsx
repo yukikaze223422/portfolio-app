@@ -1,14 +1,14 @@
 import { auth } from "@/../firebase";
 import HeaderLink from "@/components/elements/Link/HeaderLink ";
 import { useAuthContext } from "@/context/AuthContext";
-import { useMessage } from "@/hooks/useMessage";
+import { useAlertMessage } from "@/hooks/useAlertMessage";
 import { Flex, Image, Link } from "@chakra-ui/react";
 import { signOut } from "firebase/auth";
 import NextLink from "next/link";
 import { NextRouter, useRouter } from "next/router";
 
 const HeaderMenu = () => {
-  const { showMessage } = useMessage();
+  const { showMessage } = useAlertMessage();
   const { currentUser } = useAuthContext();
   const router: NextRouter = useRouter();
 

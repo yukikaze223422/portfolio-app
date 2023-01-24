@@ -2,7 +2,7 @@ import { db, storage } from "@/../firebase";
 import PrimaryButton from "@/components/elements/Button/PrimaryButton";
 import TitleLayout from "@/components/layouts/titleLayout";
 import { useAuthContext } from "@/context/AuthContext";
-import { useMessage } from "@/hooks/useMessage";
+import { useAlertMessage } from "@/hooks/useAlertMessage";
 import { Data } from "@/types/data";
 import { Inputs } from "@/types/inputs";
 import {
@@ -41,7 +41,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 const Edit: NextPage = () => {
   const router = useRouter();
   const { detail }: any = router.query;
-  const { showMessage } = useMessage();
+  const { showMessage } = useAlertMessage();
   const { currentUser } = useAuthContext();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = useRef();

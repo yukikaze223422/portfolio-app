@@ -1,12 +1,12 @@
 import { auth } from "@/../firebase";
 import { useAuthContext } from "@/context/AuthContext";
-import { useMessage } from "@/hooks/useMessage";
+import { useAlertMessage } from "@/hooks/useAlertMessage";
 import { Button } from "@chakra-ui/react";
 import { signOut } from "firebase/auth";
 import { NextRouter, useRouter } from "next/router";
 
 const HeaderMenuDrawer = () => {
-  const { showMessage } = useMessage();
+  const { showMessage } = useAlertMessage();
   const { currentUser } = useAuthContext();
   const router: NextRouter = useRouter();
 

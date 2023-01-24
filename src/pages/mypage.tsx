@@ -2,7 +2,7 @@ import { db, storage } from "@/../firebase";
 import PrimaryButton from "@/components/elements/Button/PrimaryButton";
 import TitleLayout from "@/components/layouts/titleLayout";
 import { useAuthContext } from "@/context/AuthContext";
-import { useMessage } from "@/hooks/useMessage";
+import { useAlertMessage } from "@/hooks/useAlertMessage";
 import {
   Avatar,
   Box,
@@ -29,7 +29,7 @@ import { useEffect, useState } from "react";
  */
 const MyPage: NextPage = () => {
   const { currentUser } = useAuthContext();
-  const { showMessage } = useMessage();
+  const { showMessage } = useAlertMessage();
 
   const [username, setUsername] = useState("");
   const [file, setFile] = useState<File>(null!);

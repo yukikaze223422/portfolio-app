@@ -1,7 +1,7 @@
 import { auth, db } from "@/../firebase";
 import PrimaryButton from "@/components/elements/Button/PrimaryButton";
 import TitleLayout from "@/components/layouts/titleLayout";
-import { useMessage } from "@/hooks/useMessage";
+import { useAlertMessage } from "@/hooks/useAlertMessage";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import {
   Box,
@@ -44,7 +44,7 @@ type LoginUser = {
 
 //サインアップページ
 const SignUp: NextPage = () => {
-  const { showMessage } = useMessage();
+  const { showMessage } = useAlertMessage();
 
   const {
     register,

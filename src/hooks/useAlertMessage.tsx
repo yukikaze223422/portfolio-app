@@ -6,7 +6,7 @@ type Props = {
   status: "info" | "warning" | "success" | "error";
 };
 
-export const useMessage = () => {
+export const useAlertMessage = () => {
   const toast = useToast();
 
   const showMessage = useCallback(
