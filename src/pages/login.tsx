@@ -1,3 +1,8 @@
+import { auth } from "@/../firebase";
+import PrimaryButton from "@/components/elements/Button/PrimaryButton";
+import TitleLayout from "@/components/layouts/titleLayout";
+import { useAuthContext } from "@/context/AuthContext";
+import { useMessage } from "@/hooks/useMessage";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import {
   Box,
@@ -22,11 +27,6 @@ import NextLink from "next/link";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
-import { auth } from "../../firebase";
-import PrimaryButton from "../components/elements/Button/PrimaryButton";
-import TitleLayout from "../components/layouts/titleLayout";
-import { useAuthContext } from "../context/AuthContext";
-import { useMessage } from "../hooks/useMessage";
 
 //ログインページ
 const Login: NextPage = () => {

@@ -1,3 +1,8 @@
+import { db } from "@/../firebase";
+import PrimaryButton from "@/components/elements/Button/PrimaryButton";
+import TitleLayout from "@/components/layouts/titleLayout";
+import { useAuthContext } from "@/context/AuthContext";
+import { Data } from "@/types/data";
 import {
   Avatar,
   Badge,
@@ -17,12 +22,6 @@ import NextLink from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Geocode from "react-geocode";
-import { db } from "../../../firebase";
-import PrimaryButton from "../../components/elements/Button/PrimaryButton";
-import TitleLayout from "../../components/layouts/titleLayout";
-import { useAuthContext } from "../../context/AuthContext";
-import { Data } from "../../types/data";
-
 const Detail: NextPage = () => {
   const router = useRouter();
   const { currentUser } = useAuthContext();

@@ -1,6 +1,6 @@
+import HeaderLink from "@/components/elements/Link/HeaderLink ";
 import { Flex, Image, Link } from "@chakra-ui/react";
 import NextLink from "next/link";
-import HeaderLink from "../elements/Link/HeaderLink ";
 
 const HeaderLoginMenu = () => {
   return (

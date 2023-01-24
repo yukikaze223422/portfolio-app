@@ -53,6 +53,14 @@ const AuthUser = ({ children }: authProps) => {
     } else {
       router.push("/login");
     }
+
+    if (currentUser === null && currentUser === undefined) {
+      router.push("/login");
+    } else if (decodeURI(router.asPath) == ("/login/" || "/signup/")) {
+      router.push("/");
+    } else {
+      return;
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentUser]);
 

@@ -1,3 +1,9 @@
+import { db, storage } from "@/../firebase";
+import PrimaryButton from "@/components/elements/Button/PrimaryButton";
+import TitleLayout from "@/components/layouts/titleLayout";
+import { useAuthContext } from "@/context/AuthContext";
+import { useMessage } from "@/hooks/useMessage";
+import { Inputs } from "@/types/inputs";
 import {
   Badge,
   Box,
@@ -22,12 +28,6 @@ import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { db, storage } from "../../firebase";
-import PrimaryButton from "../components/elements/Button/PrimaryButton";
-import TitleLayout from "../components/layouts/titleLayout";
-import { useAuthContext } from "../context/AuthContext";
-import { useMessage } from "../hooks/useMessage";
-import { Inputs } from "../types/inputs";
 
 const Post: NextPage = () => {
   const { showMessage } = useMessage();
